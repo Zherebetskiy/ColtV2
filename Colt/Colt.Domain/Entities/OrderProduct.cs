@@ -8,7 +8,7 @@ namespace Colt.Domain.Entities
         public Order? Order { get; set; }
 
         public int CustomerProductId { get; set; }
-        public CustomerProduct? Product { get; set; }
+        public CustomerProduct? CustomerProduct { get; set; }
 
         public double? OrderedWeight { get; set; }
 

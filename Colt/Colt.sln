@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Colt.UI.Desktop", "Colt.UI.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Colt.Domain", "Colt.Domain\Colt.Domain.csproj", "{4F1497A5-091A-4D59-9611-0CF022DD1C6F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Colt.Infrastructure", "Colt.Infrastructure\Colt.Infrastructure.csproj", "{B8AC29CA-ABE4-4566-B497-22C6230E1296}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{4F1497A5-091A-4D59-9611-0CF022DD1C6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F1497A5-091A-4D59-9611-0CF022DD1C6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F1497A5-091A-4D59-9611-0CF022DD1C6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8AC29CA-ABE4-4566-B497-22C6230E1296}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8AC29CA-ABE4-4566-B497-22C6230E1296}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8AC29CA-ABE4-4566-B497-22C6230E1296}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8AC29CA-ABE4-4566-B497-22C6230E1296}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
