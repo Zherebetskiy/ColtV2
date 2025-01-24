@@ -8,11 +8,14 @@
     Title="Colt.UI.Desktop">
 
     <TabBar>
-        <Tab Title="Home" Icon="home.png">
+        <Tab Title="Домашня" Icon="home.png">
             <ShellContent ContentTemplate="{DataTemplate local:HomePage}" />
         </Tab>
-        <Tab Title="Products" Icon="products.png">
+        <Tab Title="Продукти" Icon="products.png">
             <ShellContent ContentTemplate="{DataTemplate local:ProductsPage}" />
+        </Tab>
+        <Tab Title="Продукти" Icon="products.png">
+            <ShellContent ContentTemplate="{DataTemplate local:CustomersPage}" />
         </Tab>
     </TabBar>
 </Shell>

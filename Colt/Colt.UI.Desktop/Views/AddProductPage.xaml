@@ -3,16 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Colt.UI.Desktop.ViewModels.Products"
              x:Class="Colt.UI.Desktop.Views.AddProductPage"
-             Title="Додати продукт">
+             BackgroundColor="{DynamicResource PageBackgroundColor}">
 
     <ContentPage.BindingContext>
-        <vm:AddProductViewModel/>
+        <vm:AddProductViewModel />
     </ContentPage.BindingContext>
 
-    <StackLayout Padding="20" Spacing="10">
-        <Entry Placeholder="Назва продукту" Text="{Binding Name}" />
-        <Entry Placeholder="Опис" Text="{Binding Description}" />
-
-        <Button Text="Додати" Command="{Binding AddProductCommand}" />
-    </StackLayout>
+    <VerticalStackLayout Padding="20" Spacing="20">
+        <Entry Text="{Binding Product.Name}" Placeholder="Name" />
+        <Entry Text="{Binding Product.Description}" Placeholder="Description" />
+        <Button Text="Save" Command="{Binding SaveProductCommand}" BackgroundColor="{DynamicResource PrimaryColor}" TextColor="White" CornerRadius="10" HeightRequest="50" FontAttributes="Bold" HorizontalOptions="FillAndExpand" />
+    </VerticalStackLayout>
 </ContentPage>

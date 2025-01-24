@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Colt.UI.Desktop.ViewModels.Customers"
+             x:Class="Colt.UI.Desktop.Views.CustomersPage"
+             BackgroundColor="{DynamicResource PageBackgroundColor}">
+
+    <ContentPage.BindingContext>
+        <vm:CustomersViewModel />
+    </ContentPage.BindingContext>
+
+    <Grid Padding="20" RowDefinitions="Auto,Auto,*">
+        <Button Grid.Row="0"
+                Text="Add Customer"
+                Command="{Binding NavigateToAddCustomerCommand}"
+                BackgroundColor="{DynamicResource PrimaryColor}"
+                TextColor="White"
+                CornerRadius="10"
+                HeightRequest="50"
+                FontAttributes="Bold"
+                HorizontalOptions="FillAndExpand" />
+
+        <!-- Column Headings -->
+        <Grid Grid.Row="1" ColumnDefinitions="*,*,*" Padding="10" Margin="5">
+            <Label Grid.Column="0" Text="Ім'я" FontSize="24" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+            <Label Grid.Column="1" Text="Телефон" FontSize="24" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+            <Label Grid.Column="2" Text="Нотатки" FontSize="24" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+        </Grid>
+
+        <CollectionView Grid.Row="2"
+                        ItemsSource="{Binding Customers}"
+                        SelectionMode="None"
+                        Margin="5">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Padding="10" Margin="5" BorderColor="{DynamicResource PrimaryColor}" CornerRadius="10" HasShadow="True">
+                        <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto">
+                            <Label Grid.Row="0" Grid.Column="0" Text="{Binding Name}" FontSize="24" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                            <Label Grid.Row="0" Grid.Column="1" Text="{Binding PhoneNumber}" FontSize="18" TextColor="{DynamicResource SecondaryTextColor}" />
+                            <Label Grid.Row="0" Grid.Column="2" Text="{Binding Notes}" FontSize="18" TextColor="{DynamicResource SecondaryTextColor}" />
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

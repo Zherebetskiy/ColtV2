@@ -9,8 +9,9 @@
         <vm:ProductsViewModel />
     </ContentPage.BindingContext>
 
-    <VerticalStackLayout Padding="20" Spacing="20">
-        <Button Text="Add Product"
+    <Grid Padding="20" RowDefinitions="Auto,Auto,*">
+        <Button Grid.Row="0"
+                Text="Add Product"
                 Command="{Binding NavigateToAddProductCommand}"
                 BackgroundColor="{DynamicResource PrimaryColor}"
                 TextColor="White"
@@ -19,24 +20,31 @@
                 FontAttributes="Bold"
                 HorizontalOptions="FillAndExpand" />
 
-        <CollectionView ItemsSource="{Binding Products}" SelectionMode="None">
+        <!-- Column Headings -->
+        <Grid Grid.Row="1" ColumnDefinitions="*,*,Auto,Auto" Padding="10" Margin="5">
+            <Label Grid.Column="0" Text="Назва" FontSize="24" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+            <Label Grid.Column="1" Text="Опис" FontSize="24" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+        </Grid>
+
+        <CollectionView Grid.Row="2"
+                        ItemsSource="{Binding Products}"
+                        SelectionMode="None"
+                        Margin="5">
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Vertical" />
             </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Frame Padding="10" Margin="5" BorderColor="{DynamicResource PrimaryColor}" CornerRadius="10" HasShadow="True">
-                        <Grid ColumnDefinitions="*,*" RowDefinitions="Auto">
+                        <Grid ColumnDefinitions="*,*,Auto,Auto" RowDefinitions="Auto">
                             <Label Grid.Row="0" Grid.Column="0" Text="{Binding Name}" FontSize="24" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
                             <Label Grid.Row="0" Grid.Column="1" Text="{Binding Description}" FontSize="18" TextColor="{DynamicResource SecondaryTextColor}" />
+                            <Button Grid.Row="0" Grid.Column="2" Text="Змінити" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ProductsViewModel}}, Path=EditProductCommand}" CommandParameter="{Binding .}" BackgroundColor="{DynamicResource PrimaryColor}" TextColor="White" CornerRadius="10" />
+                            <Button Grid.Row="0" Grid.Column="3" Text="Видалити" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ProductsViewModel}}, Path=DeleteProductCommand}" CommandParameter="{Binding .}" BackgroundColor="Red" TextColor="White" CornerRadius="10" />
                         </Grid>
                     </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-    </VerticalStackLayout>
+    </Grid>
 </ContentPage>
-
-
-
-

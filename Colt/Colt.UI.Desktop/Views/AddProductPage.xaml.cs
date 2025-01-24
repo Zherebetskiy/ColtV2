@@ -1,11 +1,26 @@
+using Microsoft.Maui.Controls;
 using Colt.UI.Desktop.ViewModels.Products;
+using Colt.Domain.Entities;
 
-namespace Colt.UI.Desktop.Views;
-
-public partial class AddProductPage : ContentPage
+namespace Colt.UI.Desktop.Views
 {
-    public AddProductPage()
+    [QueryProperty(nameof(Product), "Product")]
+    public partial class AddProductPage : ContentPage
     {
-        InitializeComponent();
+        public AddProductPage()
+        {
+            InitializeComponent();
+        }
+
+        public Product Product
+        {
+            set
+            {
+                if (BindingContext is AddProductViewModel viewModel)
+                {
+                    viewModel.Product = value ?? new Product();
+                }
+            }
+        }
     }
 }
