@@ -25,7 +25,7 @@ namespace Colt.Infrastructure.Persistance.Configurations
                 .HasForeignKey(x => x.CustomerProductId);
 
             builder.HasOne(x => x.Order)
-                .WithMany()
+                .WithMany(x => x.Products)
                 .HasForeignKey(x => x.OrderId);
         }
     }

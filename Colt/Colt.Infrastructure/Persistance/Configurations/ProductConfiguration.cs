@@ -8,6 +8,8 @@ namespace Colt.Infrastructure.Persistance.Configurations
     {
         public void Configure(EntityTypeBuilder<Product> builder)
         {
+            builder.HasKey(x => x.Id);
+
             builder.Property(x => x.Name)
                 .HasMaxLength(200)
                 .IsRequired(true);
@@ -15,6 +17,14 @@ namespace Colt.Infrastructure.Persistance.Configurations
             builder.Property(x => x.Description)
                 .HasMaxLength(700)
                 .IsRequired(false);
+
+            builder.Property(x => x.CreatedDate)
+                .IsRequired(true);
+
+            builder.Property(x => x.UpdatedDate)
+                .IsRequired(false);
+
+            builder.ToTable("Products");
         }
     }
 }
