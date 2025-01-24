@@ -10,6 +10,7 @@ namespace Colt.UI.Desktop
 
             Routing.RegisterRoute(nameof(HomePage), typeof(HomePage));
             Routing.RegisterRoute(nameof(ProductsPage), typeof(ProductsPage));
+            Routing.RegisterRoute(nameof(AddProductPage), typeof(AddProductPage));
         }
     }
 }

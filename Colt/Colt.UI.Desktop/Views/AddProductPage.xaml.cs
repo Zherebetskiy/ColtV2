@@ -2,9 +2,9 @@ using Colt.UI.Desktop.ViewModels.Products;
 
 namespace Colt.UI.Desktop.Views;
 
-public partial class ProductsPage : ContentPage
+public partial class AddProductPage : ContentPage
 {
-    public ProductsPage()
+    public AddProductPage()
     {
         InitializeComponent();
     }

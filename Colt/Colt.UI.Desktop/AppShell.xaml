@@ -15,5 +15,4 @@
             <ShellContent ContentTemplate="{DataTemplate local:ProductsPage}" />
         </Tab>
     </TabBar>
-
 </Shell>
