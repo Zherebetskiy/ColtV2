@@ -22,11 +22,8 @@ namespace Colt.Infrastructure.Persistance.Configurations
 
             builder.HasOne(x => x.CustomerProduct)
                 .WithMany()
-                .HasForeignKey(x => x.CustomerProductId);
-
-            builder.HasOne(x => x.Order)
-                .WithMany(x => x.Products)
-                .HasForeignKey(x => x.OrderId);
+                .HasForeignKey(x => x.CustomerProductId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

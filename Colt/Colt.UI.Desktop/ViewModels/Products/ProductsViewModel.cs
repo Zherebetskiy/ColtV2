@@ -21,6 +21,11 @@ namespace Colt.UI.Desktop.ViewModels.Products
             NavigateToAddProductCommand = new Command(async () => await Shell.Current.GoToAsync(nameof(AddProductPage)));
         }
 
+        public async Task Initialize()
+        {
+            await LoadProducts();
+        }
+
         private async Task LoadProducts()
         {
             var products = await _productService.GetAllProductsAsync();

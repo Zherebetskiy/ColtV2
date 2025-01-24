@@ -2,27 +2,41 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Colt.UI.Desktop.ViewModels.Products"
-             x:Class="Colt.UI.Desktop.Views.ProductsPage">
+             x:Class="Colt.UI.Desktop.Views.ProductsPage"
+             BackgroundColor="{DynamicResource PageBackgroundColor}">
 
     <ContentPage.BindingContext>
         <vm:ProductsViewModel />
     </ContentPage.BindingContext>
 
-    <StackLayout Padding="10">
-        <Button Text="Додати продукт"
-                Command="{Binding NavigateToAddProductCommand}" />
+    <VerticalStackLayout Padding="20" Spacing="20">
+        <Button Text="Add Product"
+                Command="{Binding NavigateToAddProductCommand}"
+                BackgroundColor="{DynamicResource PrimaryColor}"
+                TextColor="White"
+                CornerRadius="10"
+                HeightRequest="50"
+                FontAttributes="Bold"
+                HorizontalOptions="FillAndExpand" />
 
         <CollectionView ItemsSource="{Binding Products}" SelectionMode="None">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" />
+            </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Frame Padding="10" Margin="5" BorderColor="Gray">
-                        <VerticalStackLayout>
-                            <Label Text="{Binding Name}" FontSize="20" FontAttributes="Bold"/>
-                            <Label Text="{Binding Description}" FontSize="16" />
-                        </VerticalStackLayout>
+                    <Frame Padding="10" Margin="5" BorderColor="{DynamicResource PrimaryColor}" CornerRadius="10" HasShadow="True">
+                        <Grid ColumnDefinitions="*,*" RowDefinitions="Auto">
+                            <Label Grid.Row="0" Grid.Column="0" Text="{Binding Name}" FontSize="24" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                            <Label Grid.Row="0" Grid.Column="1" Text="{Binding Description}" FontSize="18" TextColor="{DynamicResource SecondaryTextColor}" />
+                        </Grid>
                     </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-    </StackLayout>
+    </VerticalStackLayout>
 </ContentPage>
+
+
+
+

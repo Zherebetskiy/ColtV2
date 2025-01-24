@@ -50,7 +50,7 @@ namespace Colt.Infrastructure.Persistance
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=Colt;TrustServerCertificate=True; Integrated Security=True;");
+                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=ColtV2;TrustServerCertificate=True; Integrated Security=True;");
             }
 
             optionsBuilder.AddInterceptors(_auditableEntitySaveChangesInterceptor);
