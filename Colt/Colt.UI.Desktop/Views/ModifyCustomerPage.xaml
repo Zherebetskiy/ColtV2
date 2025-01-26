@@ -57,6 +57,25 @@
                 </toolkit:Expander.Content>
             </toolkit:Expander>
 
+            <toolkit:Expander IsExpanded="True">
+                <toolkit:Expander.Header>
+                    <Label Text="Замовлення (натисніть щоб розгорнути)" FontSize="18" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                </toolkit:Expander.Header>
+                <toolkit:Expander.Content>
+                    <Label Text="Замовлення список" FontSize="18" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                </toolkit:Expander.Content>
+            </toolkit:Expander>
+
+            <toolkit:Expander>
+                <toolkit:Expander.Header>
+                    <Label Text="Оплата (натисніть щоб розгорнути)" FontSize="18" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                </toolkit:Expander.Header>
+                <toolkit:Expander.Content>
+                    <Label Text="Оплата список" FontSize="18" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                </toolkit:Expander.Content>
+            </toolkit:Expander>
+
+
             <Button Text="Зберегти"
                     Command="{Binding SaveCustomerCommand}"
                     BackgroundColor="{DynamicResource PrimaryColor}"

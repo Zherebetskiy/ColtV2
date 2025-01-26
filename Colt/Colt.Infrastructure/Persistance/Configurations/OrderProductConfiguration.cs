@@ -20,10 +20,12 @@ namespace Colt.Infrastructure.Persistance.Configurations
             builder.Property(x => x.ActualWeight)
                .IsRequired(false);
 
-            builder.HasOne(x => x.CustomerProduct)
-                .WithMany()
-                .HasForeignKey(x => x.CustomerProductId)
-                .OnDelete(DeleteBehavior.NoAction);
+            builder.Property(x => x.ProductName)
+                .HasMaxLength(200)
+                .IsRequired(false);
+
+            builder.Property(x => x.ProductPrice)
+                .IsRequired(false);
         }
     }
 }
