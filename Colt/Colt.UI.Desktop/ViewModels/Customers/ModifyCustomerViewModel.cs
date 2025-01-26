@@ -46,7 +46,7 @@ namespace Colt.UI.Desktop.ViewModels.Customers
             _productService = ServiceHelper.GetService<IProductService>();
             SaveCustomerCommand = new Command(async () => await SaveCustomer());
             AddProductCommand = new Command(AddProduct);
-            RemoveProductCommand = new Command<CustomerProduct>(RemoveProduct);
+            RemoveProductCommand = new Command<CustomerProduct>(async (product) => await RemoveProductAsync(product));
             Customer = new Customer();
             Products = new ObservableCollection<CustomerProduct>();
             SelectedProducts = new ObservableCollection<CustomerProduct>();
@@ -107,9 +107,10 @@ namespace Colt.UI.Desktop.ViewModels.Customers
             await Shell.Current.GoToAsync("..");
         }
 
-        private void RemoveProduct(CustomerProduct product)
+        private async Task RemoveProductAsync(CustomerProduct product)
         {
-            if (SelectedProducts.Contains(product))
+            bool isConfirmed = await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Підтвердження", "Ви впевнені, що хочете видалити цeй продукт?", "Так", "Ні");
+            if (isConfirmed && SelectedProducts.Contains(product))
             {
                 SelectedProducts.Remove(product);
             }

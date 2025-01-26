@@ -2,6 +2,7 @@
 using Colt.Infrastructure;
 using Colt.UI.Desktop.Helpers;
 using Colt.UI.Desktop.ViewModels.Products;
+using CommunityToolkit.Maui;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -14,6 +15,7 @@ namespace Colt.UI.Desktop
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

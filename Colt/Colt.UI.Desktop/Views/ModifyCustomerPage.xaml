@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Colt.UI.Desktop.ViewModels.Customers"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="Colt.UI.Desktop.Views.ModifyCustomerPage"
              BackgroundColor="{DynamicResource PageBackgroundColor}">
 
@@ -14,38 +15,47 @@
             <Entry Placeholder="Ім'я" Text="{Binding Customer.Name}" />
             <Entry Placeholder="Номер телефону" Text="{Binding Customer.PhoneNumber}" />
             <Editor Placeholder="Нотатки" Text="{Binding Customer.Notes}" />
-            
-            <Picker Title="Оберіть продукт"
-                    x:Name="ProductPicker"
-                    ItemsSource="{Binding Products}"
-                    ItemDisplayBinding="{Binding Product.Name}"
-                    SelectedItem="{Binding SelectedProduct}" />
-            <Button Text="Додати продукт"
-            Command="{Binding AddProductCommand}"
-            BackgroundColor="{DynamicResource PrimaryColor}"
-            TextColor="White"
-            CornerRadius="10"
-            HeightRequest="40"
-            WidthRequest="150"
-            FontAttributes="Bold"
-            HorizontalOptions="Start" />
 
-            <CollectionView ItemsSource="{Binding SelectedProducts}" SelectionMode="None" Margin="5">
-                <CollectionView.ItemsLayout>
-                    <LinearItemsLayout Orientation="Vertical" />
-                </CollectionView.ItemsLayout>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Frame Padding="5" Margin="2" BorderColor="{DynamicResource PrimaryColor}" CornerRadius="10" HasShadow="True">
-                            <Grid ColumnDefinitions="*,*,Auto" RowDefinitions="Auto" RowSpacing="2">
-                                <Label Grid.Row="0" Grid.Column="0" Text="{Binding Product.Name}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
-                                <Entry Grid.Row="0" Grid.Column="1" Text="{Binding Price, Mode=TwoWay}" FontSize="16" TextColor="{DynamicResource SecondaryTextColor}" Keyboard="Numeric" />
-                                <Button Grid.Row="0" Grid.Column="2" Text="Видалити" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=RemoveProductCommand}" CommandParameter="{Binding .}" BackgroundColor="Red" TextColor="White" CornerRadius="10" HeightRequest="30" WidthRequest="80" />
-                            </Grid>
-                        </Frame>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+            <toolkit:Expander>
+                <toolkit:Expander.Header>
+                    <Label Text="Продукти (натисніть щоб розгорнути)" FontSize="18" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                </toolkit:Expander.Header>
+                <toolkit:Expander.Content>
+                    <StackLayout Spacing="10">
+                        <Picker Title="Оберіть продукт"
+                                x:Name="ProductPicker"
+                                ItemsSource="{Binding Products}"
+                                ItemDisplayBinding="{Binding Product.Name}"
+                                SelectedItem="{Binding SelectedProduct}" />
+                        <Button Text="Додати продукт"
+                                Command="{Binding AddProductCommand}"
+                                BackgroundColor="{DynamicResource PrimaryColor}"
+                                TextColor="White"
+                                CornerRadius="10"
+                                HeightRequest="40"
+                                WidthRequest="150"
+                                FontAttributes="Bold"
+                                HorizontalOptions="Start" />
+
+                        <CollectionView ItemsSource="{Binding SelectedProducts}" SelectionMode="None" Margin="5">
+                            <CollectionView.ItemsLayout>
+                                <LinearItemsLayout Orientation="Vertical" />
+                            </CollectionView.ItemsLayout>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Frame Padding="5" Margin="2" BorderColor="{DynamicResource PrimaryColor}" CornerRadius="10" HasShadow="True">
+                                        <Grid ColumnDefinitions="*,*,Auto" RowDefinitions="Auto" RowSpacing="2">
+                                            <Label Grid.Row="0" Grid.Column="0" Text="{Binding Product.Name}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
+                                            <Entry Grid.Row="0" Grid.Column="1" Text="{Binding Price, Mode=TwoWay}" FontSize="16" TextColor="{DynamicResource SecondaryTextColor}" Keyboard="Numeric" />
+                                            <Button Grid.Row="0" Grid.Column="2" Text="Видалити" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=RemoveProductCommand}" CommandParameter="{Binding .}" BackgroundColor="Red" TextColor="White" CornerRadius="10" HeightRequest="30" WidthRequest="80" />
+                                        </Grid>
+                                    </Frame>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
+                </toolkit:Expander.Content>
+            </toolkit:Expander>
 
             <Button Text="Зберегти"
                     Command="{Binding SaveCustomerCommand}"
