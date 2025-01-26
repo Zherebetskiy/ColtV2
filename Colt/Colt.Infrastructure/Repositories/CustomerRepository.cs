@@ -17,6 +17,14 @@ namespace Colt.Infrastructure.Repositories
             _dbSet = _dbContext.GetSet<Customer>();
         }
 
+        public override Task<Customer> GetByIdAsync(int id, CancellationToken cancellationToken)
+        {
+            return _dbSet
+                .Where(x => x.Id == id)
+                .Include(x => x.Products)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
+
         public Task<Customer> GetWithProductsAsync(int id, CancellationToken cancellationToken)
         {
             return _dbSet

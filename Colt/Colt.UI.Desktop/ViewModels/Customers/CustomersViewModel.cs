@@ -14,7 +14,7 @@ namespace Colt.UI.Desktop.ViewModels.Customers
         public ObservableCollection<Customer> Customers { get; }
 
         public ICommand LoadCustomersCommand { get; }
-        public ICommand NavigateToModifyCustomerCommand { get; }
+        public ICommand NavigateToAddCustomerCommand { get; }
         public ICommand EditCustomerCommand { get; }
         public ICommand DeleteCustomerCommand { get; }
 
@@ -22,8 +22,8 @@ namespace Colt.UI.Desktop.ViewModels.Customers
         {
             _customerService = ServiceHelper.GetService<ICustomerService>();
             Customers = new ObservableCollection<Customer>();
-            LoadCustomersCommand = new Command(async () => await LoadCustomers());
-            NavigateToModifyCustomerCommand = new Command<Customer>(async (customer) => await NavigateToModifyCustomer(customer));
+            ////LoadCustomersCommand = new Command(async () => await LoadCustomers());
+            NavigateToAddCustomerCommand = new Command(async () => await Shell.Current.GoToAsync(nameof(ModifyCustomerPage)));
             EditCustomerCommand = new Command<Customer>(async (customer) => await NavigateToModifyCustomer(customer));
             DeleteCustomerCommand = new Command<Customer>(async (customer) => await DeleteCustomer(customer));
         }

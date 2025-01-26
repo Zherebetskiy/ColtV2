@@ -11,7 +11,7 @@
 
     <Grid Padding="20" RowDefinitions="Auto,Auto,*">
         <Button Grid.Row="0"
-                Text="Add Product"
+                Text="Додти продукт"
                 Command="{Binding NavigateToAddProductCommand}"
                 BackgroundColor="{DynamicResource PrimaryColor}"
                 TextColor="White"
@@ -34,9 +34,9 @@
                 <LinearItemsLayout Orientation="Vertical" />
             </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate>  
                     <Frame Padding="10" Margin="5" BorderColor="{DynamicResource PrimaryColor}" CornerRadius="10" HasShadow="True">
-                        <Grid ColumnDefinitions="*,*,Auto,Auto" RowDefinitions="Auto">
+                        <Grid ColumnDefinitions="*,*,Auto,Auto" RowDefinitions="Auto" RowSpacing="5">
                             <Label Grid.Row="0" Grid.Column="0" Text="{Binding Name}" FontSize="24" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
                             <Label Grid.Row="0" Grid.Column="1" Text="{Binding Description}" FontSize="18" TextColor="{DynamicResource SecondaryTextColor}" />
                             <Button Grid.Row="0" Grid.Column="2" Text="Змінити" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ProductsViewModel}}, Path=EditProductCommand}" CommandParameter="{Binding .}" BackgroundColor="{DynamicResource PrimaryColor}" TextColor="White" CornerRadius="10" />

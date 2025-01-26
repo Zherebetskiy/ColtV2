@@ -12,6 +12,6 @@
     <VerticalStackLayout Padding="20" Spacing="20">
         <Entry Text="{Binding Product.Name}" Placeholder="Name" />
         <Entry Text="{Binding Product.Description}" Placeholder="Description" />
-        <Button Text="Save" Command="{Binding SaveProductCommand}" BackgroundColor="{DynamicResource PrimaryColor}" TextColor="White" CornerRadius="10" HeightRequest="50" FontAttributes="Bold" HorizontalOptions="FillAndExpand" />
+        <Button Text="Зберегти" Command="{Binding SaveProductCommand}" BackgroundColor="{DynamicResource PrimaryColor}" TextColor="White" CornerRadius="10" HeightRequest="50" FontAttributes="Bold" HorizontalOptions="FillAndExpand" />
     </VerticalStackLayout>
 </ContentPage>

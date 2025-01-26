@@ -28,7 +28,20 @@ namespace Colt.Application.Services
             if (string.IsNullOrWhiteSpace(customer.Name) || string.IsNullOrWhiteSpace(customer.PhoneNumber))
                 throw new ArgumentException("Name and PhoneNumber are required.");
 
+            if (customer.Products != null && customer.Products.Any())
+            {
+                foreach (var product in customer.Products)
+                {
+                    product.Product = null;
+                }
+            }
+
             await _customerRepository.AddAsync(customer, CancellationToken.None);
+        }
+
+        public Task<List<CustomerProduct>> GetProductsAsync(int customerId)
+        {
+            return _customerRepository.GetProductsByCustomerIdAsync(customerId, CancellationToken.None);
         }
 
         public async Task<Customer> UpdateAsync(Customer customer)
@@ -39,7 +52,33 @@ namespace Colt.Application.Services
             existingCustomer.PhoneNumber = customer.PhoneNumber;
             existingCustomer.Notes = customer.Notes;
 
+            await HandleProductsAsync(existingCustomer, customer);
+
             return await _customerRepository.UpdateAsync(existingCustomer, CancellationToken.None);
+        }
+
+        private async Task HandleProductsAsync(Customer existingCustomer, Customer customer)
+        {
+            var addedProducts = customer.Products.Where(x => x.Id == 0).ToList();
+            var updatedProducts = customer.Products.Where(x => x.Id != 0).ToList();
+            var removedProducts = existingCustomer.Products
+                .Where(x => !customer.Products.Any(y => x.ProductId == y.ProductId))
+                .ToList();
+
+            await _customerRepository.DeleteProductsAsync(removedProducts, CancellationToken.None);
+
+            foreach (var product in addedProducts)
+            {
+                product.CustomerId = existingCustomer.Id;
+                product.Product = null;
+                existingCustomer.Products.Add(product);
+            }
+
+            foreach (var product in updatedProducts)
+            {
+                var existingProduct = existingCustomer.Products.First(x => x.ProductId == product.ProductId);
+                existingProduct.Price = product.Price;
+            }
         }
     }
 }

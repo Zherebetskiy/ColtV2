@@ -26,8 +26,8 @@ namespace Colt.Application.Services
 
         public async Task InsertAsync(Product product)
         {
-            if (string.IsNullOrWhiteSpace(product.Name) || string.IsNullOrWhiteSpace(product.Description))
-                throw new ArgumentException("Name and Description are required.");
+            if (string.IsNullOrWhiteSpace(product.Name))
+                throw new ArgumentException("Name is required.");
 
             await _productRepository.AddAsync(product, CancellationToken.None);
         }

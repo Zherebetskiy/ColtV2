@@ -14,7 +14,7 @@
         <Tab Title="Продукти" Icon="products.png">
             <ShellContent ContentTemplate="{DataTemplate local:ProductsPage}" />
         </Tab>
-        <Tab Title="Продукти" Icon="products.png">
+        <Tab Title="Оптовики" Icon="products.png">
             <ShellContent ContentTemplate="{DataTemplate local:CustomersPage}" />
         </Tab>
     </TabBar>

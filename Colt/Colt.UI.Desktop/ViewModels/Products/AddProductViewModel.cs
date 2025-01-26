@@ -12,11 +12,7 @@ namespace Colt.UI.Desktop.ViewModels.Products
         public Product Product
         {
             get => _product;
-            set
-            {
-                _product = value;
-                OnPropertyChanged();
-            }
+            set => SetProperty(ref _product, value);
         }
         public ICommand SaveProductCommand { get; }
 

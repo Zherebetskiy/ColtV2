@@ -10,7 +10,7 @@ namespace Colt.Domain.Entities
 
         public string PhoneNumber { get; set; }
 
-        public ICollection<CustomerProduct> Products { get; set; }
+        public ICollection<CustomerProduct> Products { get; set; } = new List<CustomerProduct>();
 
         public ICollection<Order> Orders { get; set; }
 
