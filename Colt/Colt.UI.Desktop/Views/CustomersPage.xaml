@@ -9,10 +9,10 @@
         <vm:CustomersViewModel />
     </ContentPage.BindingContext>
 
-    <Grid Padding="20" RowDefinitions="Auto,Auto,*">
+    <Grid Padding="20" RowDefinitions="Auto,Auto,Auto,*">
         <Button Grid.Row="0"
                 Text="Add Customer"
-                Command="{Binding NavigateToAddCustomerCommand}"
+                Command="{Binding NavigateToModifyCustomer}"
                 BackgroundColor="{DynamicResource PrimaryColor}"
                 TextColor="White"
                 CornerRadius="10"
@@ -41,6 +41,8 @@
                             <Label Grid.Row="0" Grid.Column="0" Text="{Binding Name}" FontSize="24" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
                             <Label Grid.Row="0" Grid.Column="1" Text="{Binding PhoneNumber}" FontSize="18" TextColor="{DynamicResource SecondaryTextColor}" />
                             <Label Grid.Row="0" Grid.Column="2" Text="{Binding Notes}" FontSize="18" TextColor="{DynamicResource SecondaryTextColor}" />
+                            <Button Grid.Row="0" Grid.Column="3" Text="Змінити" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ProductsViewModel}}, Path=EditProductCommand}" CommandParameter="{Binding .}" BackgroundColor="{DynamicResource PrimaryColor}" TextColor="White" CornerRadius="10" />
+                            <Button Grid.Row="0" Grid.Column="4" Text="Видалити" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ProductsViewModel}}, Path=DeleteProductCommand}" CommandParameter="{Binding .}" BackgroundColor="Red" TextColor="White" CornerRadius="10" />
                         </Grid>
                     </Frame>
                 </DataTemplate>

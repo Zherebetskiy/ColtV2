@@ -1,4 +1,5 @@
 ﻿using Colt.Application.Interfaces;
+using Colt.Application.Services;
 using Colt.Domain.Entities;
 using Colt.UI.Desktop.Helpers;
 using Colt.UI.Desktop.Views;
@@ -14,13 +15,17 @@ namespace Colt.UI.Desktop.ViewModels.Customers
 
         public ICommand LoadCustomersCommand { get; }
         public ICommand NavigateToModifyCustomerCommand { get; }
+        public ICommand EditCustomerCommand { get; }
+        public ICommand DeleteCustomerCommand { get; }
 
         public CustomersViewModel()
         {
             _customerService = ServiceHelper.GetService<ICustomerService>();
             Customers = new ObservableCollection<Customer>();
             LoadCustomersCommand = new Command(async () => await LoadCustomers());
-            NavigateToModifyCustomerCommand = new Command(async () => await NavigateToModifyCustomer());
+            NavigateToModifyCustomerCommand = new Command<Customer>(async (customer) => await NavigateToModifyCustomer(customer));
+            EditCustomerCommand = new Command<Customer>(async (customer) => await NavigateToModifyCustomer(customer));
+            DeleteCustomerCommand = new Command<Customer>(async (customer) => await DeleteCustomer(customer));
         }
 
         public async Task Initialize()
@@ -38,9 +43,25 @@ namespace Colt.UI.Desktop.ViewModels.Customers
             }
         }
 
-        private async Task NavigateToModifyCustomer()
+        private async Task NavigateToModifyCustomer(Customer customer)
         {
-            await Shell.Current.GoToAsync(nameof(ModifyCustomerPage));
+            var navigationParameter = new Dictionary<string, object>
+            {
+                { "Customer", customer }
+            };
+
+            await Shell.Current.GoToAsync(nameof(ModifyCustomerPage), navigationParameter);
+        }
+
+        private async Task DeleteCustomer(Customer customer)
+        {
+            bool isConfirmed = await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Підтвердження", "Ви впевнені, що хочете видалити цього оптовика?", "Так", "Ні");
+            if (isConfirmed)
+            {
+                await _customerService.DeleteAsync(customer.Id);
+                Customers.Remove(customer);
+                await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", "Оптовика видалено!", "OK");
+            }
         }
     }
 }

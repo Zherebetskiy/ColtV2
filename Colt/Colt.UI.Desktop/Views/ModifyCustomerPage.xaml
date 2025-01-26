@@ -10,9 +10,9 @@
     </ContentPage.BindingContext>
 
     <StackLayout Padding="20">
-        <Entry Placeholder="Name" Text="{Binding Customer.Name}" />
-        <Entry Placeholder="Phone Number" Text="{Binding Customer.PhoneNumber}" />
-        <Editor Placeholder="Notes" Text="{Binding Customer.Notes}" />
+        <Entry Placeholder="Ім'я" Text="{Binding Customer.Name}" />
+        <Entry Placeholder="Номер телефону" Text="{Binding Customer.PhoneNumber}" />
+        <Editor Placeholder="Нотатки" Text="{Binding Customer.Notes}" />
 
         <Button Text="Save Customer"
                 Command="{Binding SaveCustomerCommand}"
