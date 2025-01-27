@@ -13,6 +13,7 @@ namespace Colt.UI.Desktop
             Routing.RegisterRoute(nameof(AddProductPage), typeof(AddProductPage));
             Routing.RegisterRoute(nameof(CustomersPage), typeof(CustomersPage));
             Routing.RegisterRoute(nameof(ModifyCustomerPage), typeof(ModifyCustomerPage));
+            Routing.RegisterRoute(nameof(OrderPage), typeof(OrderPage));
         }
     }
 }

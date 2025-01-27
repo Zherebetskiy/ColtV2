@@ -1,6 +1,8 @@
 ﻿using Colt.Application.Interfaces;
 using Colt.Domain.Entities;
+using Colt.Domain.Enums;
 using Colt.UI.Desktop.Helpers;
+using Colt.UI.Desktop.Views;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -17,6 +19,9 @@ namespace Colt.UI.Desktop.ViewModels.Customers
         public ICommand SaveCustomerCommand { get; }
         public ICommand AddProductCommand { get; }
         public ICommand RemoveProductCommand { get; }
+        public ICommand CreateOrderCommand { get; }
+        public ICommand EditOrderCommand { get; }
+        public ICommand DeleteOrderCommand { get; }
 
         private CustomerProduct _selectedProduct;
         public CustomerProduct SelectedProduct
@@ -47,6 +52,9 @@ namespace Colt.UI.Desktop.ViewModels.Customers
             SaveCustomerCommand = new Command(async () => await SaveCustomer());
             AddProductCommand = new Command(AddProduct);
             RemoveProductCommand = new Command<CustomerProduct>(async (product) => await RemoveProductAsync(product));
+            DeleteOrderCommand = new Command<Order>(async (order) => await RemoveOrderAsync(order));
+            CreateOrderCommand = new Command(async () => await NavigateToCreateOrderPage());
+            EditOrderCommand = new Command<Order>(async (order) => await NavigateToEditOrderPage(order));
             Customer = new Customer();
             Products = new ObservableCollection<CustomerProduct>();
             SelectedProducts = new ObservableCollection<CustomerProduct>();
@@ -104,16 +112,51 @@ namespace Colt.UI.Desktop.ViewModels.Customers
                 await _customerService.UpdateAsync(Customer);
                 await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", "Клієнт змінено!", "OK");
             }
-            await Shell.Current.GoToAsync("..");
         }
 
         private async Task RemoveProductAsync(CustomerProduct product)
         {
-            bool isConfirmed = await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Підтвердження", "Ви впевнені, що хочете видалити цeй продукт?", "Так", "Ні");
+            var isConfirmed = await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Підтвердження", "Ви впевнені, що хочете видалити цeй продукт?", "Так", "Ні");
             if (isConfirmed && SelectedProducts.Contains(product))
             {
                 SelectedProducts.Remove(product);
             }
+        }
+
+        private async Task RemoveOrderAsync(Order order)
+        {
+            if(order.Status == OrderStatus.Delivered)
+            {
+                await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", "Не можна видалити доствлене замовлення!", "OK");
+                return;
+            }
+
+            bool isConfirmed = await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Підтвердження", "Ви впевнені, що хочете видалити цe замовлення?", "Так", "Ні");
+            if (isConfirmed)
+            {
+                Customer.Orders.Remove(order);
+            }
+        }
+
+        private async Task NavigateToCreateOrderPage()
+        {
+            var navigationParameter = new Dictionary<string, object>
+            {
+                { "Customer", Customer }
+            };
+
+            await Shell.Current.GoToAsync(nameof(OrderPage), navigationParameter);
+        }
+
+        private async Task NavigateToEditOrderPage(Order order)
+        {
+            var navigationParameter = new Dictionary<string, object>
+            {
+                { "Customer", Customer },
+                { "OrderId", order.Id }
+            };
+
+            await Shell.Current.GoToAsync(nameof(OrderPage), navigationParameter);
         }
     }
 }

@@ -5,6 +5,7 @@ using Colt.UI.Desktop.ViewModels.Products;
 using CommunityToolkit.Maui;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System.Globalization;
 
 namespace Colt.UI.Desktop
 {
@@ -37,6 +38,9 @@ namespace Colt.UI.Desktop
             #if DEBUG
             builder.Logging.AddDebug();
             #endif
+
+            CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("uk-UA");
+            CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("uk-UA");
 
             var app = builder.Build();
 

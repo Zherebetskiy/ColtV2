@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Colt.UI.Desktop.ViewModels.Orders"
+             xmlns:sys="clr-namespace:System;assembly=netstandard"
+             x:Class="Colt.UI.Desktop.Views.OrderPage"
+             BackgroundColor="{DynamicResource PageBackgroundColor}">
+
+    <ContentPage.BindingContext>
+        <vm:OrderViewModel />
+    </ContentPage.BindingContext>
+
+    <ScrollView>
+        <StackLayout Padding="10" Spacing="10">
+            <Grid ColumnDefinitions="*,*,*,*,*" RowDefinitions="Auto,Auto" Padding="5" Margin="2">
+                <Label Grid.Row="0" Grid.Column="0" Text="Оптовик" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                <Label Grid.Row="0" Grid.Column="1" Text="{Binding Customer.Name}" FontSize="16" TextColor="{DynamicResource SecondaryTextColor}" />
+
+                <Label Grid.Row="0" Grid.Column="3" Text="Статус замовлення" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                <Label Grid.Row="0" Grid.Column="4" Text="{Binding Order.Status}" FontSize="16" TextColor="{DynamicResource SecondaryTextColor}" />
+
+                <Label Grid.Row="1" Grid.Column="0" Text="Дата створення" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                <Label Grid.Row="1" Grid.Column="1" Text="{Binding Order.Date}" FontSize="16" TextColor="{DynamicResource SecondaryTextColor}" />
+
+                <Label Grid.Row="1" Grid.Column="3" Text="Дата доставки" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                <DatePicker Grid.Row="1" Grid.Column="4" Date="{Binding Order.Delivery}" MinimumDate="{x:Static sys:DateTime.Today}" />
+            </Grid>
+            
+            <Label Text="Продукти" FontSize="18" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+            <CollectionView ItemsSource="{Binding Products}" SelectionMode="None" Margin="5">
+                <CollectionView.Header>
+                    <Grid ColumnDefinitions="*,*,*,*,*" Padding="5" Margin="2">
+                        <Label Grid.Column="0" Text="Назва" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                        <Label Grid.Column="1" Text="Ціна/кг" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                        <Label Grid.Column="2" Text="Замовлена вага" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                        <Label Grid.Column="3" Text="Поважена вага" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                        <Label Grid.Column="4" Text="Загальна ціна" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                    </Grid>
+                </CollectionView.Header>
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Padding="5" Margin="2" BorderColor="{DynamicResource PrimaryColor}" CornerRadius="10" HasShadow="True">
+                            <Grid ColumnDefinitions="*,*,*,*,*" RowDefinitions="Auto" RowSpacing="2">
+                                <Label Grid.Row="0" Grid.Column="0" Text="{Binding ProductName}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
+                                <Label Grid.Row="0" Grid.Column="1" Text="{Binding ProductPrice}" FontSize="16" TextColor="{DynamicResource SecondaryTextColor}" /> 
+                                <Entry Grid.Row="0" Grid.Column="2" Text="{Binding OrderedWeight, Mode=TwoWay}" FontSize="16" TextColor="{DynamicResource SecondaryTextColor}" Keyboard="Numeric" />
+                                <Entry Grid.Row="0" Grid.Column="3" Text="{Binding ActualWeight, Mode=TwoWay}" FontSize="16" TextColor="{DynamicResource SecondaryTextColor}" Keyboard="Numeric" />
+                                <Label Grid.Row="0" Grid.Column="4" Text="{Binding TotalPrice}" FontSize="16" TextColor="{DynamicResource SecondaryTextColor}" />
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+                <CollectionView.Footer>
+                    <Grid ColumnDefinitions="*,*,*,*,*">
+                        <Label Grid.Column="3" Text="Загальна ціна" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                        <Label Grid.Column="4" Text="{Binding TotalOrderPrice}" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                    </Grid>
+                </CollectionView.Footer>
+            </CollectionView>
+
+            <Button Text="Зберегти замовлення"
+                    Command="{Binding SaveOrderCommand}"
+                    BackgroundColor="{DynamicResource PrimaryColor}"
+                    TextColor="White"
+                    CornerRadius="10"
+                    HeightRequest="50"
+                    FontAttributes="Bold"
+                    HorizontalOptions="FillAndExpand" />
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

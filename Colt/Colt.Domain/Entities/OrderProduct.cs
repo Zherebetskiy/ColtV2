@@ -1,4 +1,5 @@
 ﻿using Colt.Domain.Common;
+using System.ComponentModel;
 
 namespace Colt.Domain.Entities
 { 
