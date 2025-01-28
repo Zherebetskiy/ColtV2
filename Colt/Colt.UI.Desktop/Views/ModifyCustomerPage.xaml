@@ -78,19 +78,26 @@
                             <CollectionView.ItemsLayout>
                                 <LinearItemsLayout Orientation="Vertical" />
                             </CollectionView.ItemsLayout>
+                            <CollectionView.Header>
+                                <Grid ColumnDefinitions="*,*,*,*,*" Padding="5" Margin="2">
+                                    <Label Grid.Column="0" Text="Створення" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                                    <Label Grid.Column="1" Text="Доаставка" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                                    <Label Grid.Column="2" Text="Статус" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                                    <Label Grid.Column="3" Text="Загальна ціна" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                                </Grid>
+                            </CollectionView.Header>
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
                                     <Frame Padding="5" Margin="2" BorderColor="{DynamicResource PrimaryColor}" CornerRadius="10" HasShadow="True">
-                                        <Grid ColumnDefinitions="*,2*,2*,2*,2*,Auto,Auto,Auto,Auto" RowDefinitions="Auto" RowSpacing="2">
-                                            <Label Grid.Row="0" Grid.Column="0" Text="{Binding Id}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
-                                            <Label Grid.Row="0" Grid.Column="1" Text="{Binding Date, Converter={StaticResource DateTimeToStringConverter}}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
-                                            <Label Grid.Row="0" Grid.Column="2" Text="{Binding Delivery, Converter={StaticResource DateTimeToStringConverter}}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
-                                            <Label Grid.Row="0" Grid.Column="3" Text="{Binding Status, Converter={StaticResource EnumToStringConverter}}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
-                                            <Label Grid.Row="0" Grid.Column="4" Text="{Binding TotalPrice}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
-                                            <ImageButton Grid.Row="0" Grid.Column="5" Source="iconsdeliver.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=DeliverOrderCommand}" CommandParameter="{Binding .}" BackgroundColor="{DynamicResource PrimaryColor}" CornerRadius="10" />
+                                        <Grid ColumnDefinitions="*,*,*,*,Auto,Auto,Auto,Auto" RowDefinitions="Auto" RowSpacing="2">
+                                            <Label Grid.Row="0" Grid.Column="0" Text="{Binding Date, Converter={StaticResource DateTimeToStringConverter}}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
+                                            <Label Grid.Row="0" Grid.Column="1" Text="{Binding Delivery, Converter={StaticResource DateTimeToStringConverter}}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
+                                            <Label Grid.Row="0" Grid.Column="2" Text="{Binding Status, Converter={StaticResource EnumToStringConverter}}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
+                                            <Label Grid.Row="0" Grid.Column="3" Text="{Binding TotalPrice}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
+                                            <ImageButton Grid.Row="0" Grid.Column="4" Source="iconsdeliver.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=DeliverOrderCommand}" CommandParameter="{Binding .}" BackgroundColor="{DynamicResource PrimaryColor}" CornerRadius="10" />
                                             <ImageButton Grid.Row="0" Grid.Column="5" Source="iconsprint.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=PrintOrderCommand}" CommandParameter="{Binding .}" BackgroundColor="{DynamicResource PrimaryColor}" CornerRadius="10" />
-                                            <ImageButton Grid.Row="0" Grid.Column="5" Source="editicon.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=EditOrderCommand}" CommandParameter="{Binding .}" BackgroundColor="{DynamicResource PrimaryColor}" CornerRadius="10" />
-                                            <ImageButton Grid.Row="0" Grid.Column="6" Source="iconsdelete.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=DeleteOrderCommand}" CommandParameter="{Binding .}" CornerRadius="10" />
+                                            <ImageButton Grid.Row="0" Grid.Column="6" Source="editicon.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=EditOrderCommand}" CommandParameter="{Binding .}" BackgroundColor="{DynamicResource PrimaryColor}" CornerRadius="10" />
+                                            <ImageButton Grid.Row="0" Grid.Column="7" Source="iconsdelete.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=DeleteOrderCommand}" CommandParameter="{Binding .}" CornerRadius="10" />
                                         </Grid>
                                     </Frame>
                                 </DataTemplate>
