@@ -1,5 +1,4 @@
 ﻿using Colt.Application.Interfaces;
-using Colt.Application.Services;
 using Colt.Domain.Entities;
 using Colt.Domain.Enums;
 using Colt.UI.Desktop.Helpers;
@@ -45,6 +44,17 @@ namespace Colt.UI.Desktop.ViewModels.Orders
             }
         }
 
+        //private DateTime? _delivery;
+        //public DateTime? Delivery
+        //{
+        //    get => _delivery;
+        //    set
+        //    {
+        //        _delivery = value;
+        //        OnPropertyChanged();
+        //    }
+        //}
+
         public ObservableCollection<OrderProductViewModel> Products { get; }
 
         public ICommand SaveOrderCommand { get; }
@@ -67,7 +77,8 @@ namespace Colt.UI.Desktop.ViewModels.Orders
                 {
                     CustomerId = Customer.Id,
                     Date = DateTime.Now,
-                    Status = OrderStatus.Created
+                    Status = OrderStatus.Created,
+                    Delivery = DateTime.Now
                 };
 
                 foreach (var cp in customerProducts)
@@ -87,7 +98,7 @@ namespace Colt.UI.Desktop.ViewModels.Orders
 
                 foreach (var op in Order.Products)
                 {
-                    Products.Add(new OrderProductViewModel
+                    var productViewModel = new OrderProductViewModel
                     {
                         Id = op.Id,
                         ProductName = op.ProductName,
@@ -95,7 +106,10 @@ namespace Colt.UI.Desktop.ViewModels.Orders
                         ActualWeight = op.ActualWeight,
                         OrderedWeight = op.OrderedWeight,
                         OrderId = op.OrderId
-                    });
+                    };
+
+                    Products.Add(productViewModel);
+                    productViewModel.TotalPriceChanged += OnProductTotalPriceChanged;
                 }
             }
 
@@ -119,49 +133,36 @@ namespace Colt.UI.Desktop.ViewModels.Orders
                 await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", "Не можна змінити доставлене замовлення!", "OK");
             }
 
+            Order.TotalPrice = TotalOrderPrice;
+            Order.TotalWeight = Products.Sum(x => x.ActualWeight);
+            Order.Products = Products.Select(p => new OrderProduct
+            {
+                Id = p.Id,
+                ProductName = p.ProductName,
+                ProductPrice = p.ProductPrice,
+                OrderedWeight = p.OrderedWeight,
+                ActualWeight = p.ActualWeight,
+                TotalPrice = p.TotalPrice
+            }).ToList();
+
+            Order.Status = Products.Any(x => x.ActualWeight.HasValue && x.ActualWeight != 0)
+                ? OrderStatus.Calculated
+                : OrderStatus.Created;
+
             if (OrderId == default)
             {
-                Order.TotalPrice = TotalOrderPrice;
-                Order.TotalWeight = Products.Sum(x => x.ActualWeight);
-                Order.Products = Products.Select(p => new OrderProduct
-                {
-                    ProductName = p.ProductName,
-                    ProductPrice = p.ProductPrice,
-                    OrderedWeight = p.OrderedWeight,
-                    ActualWeight = p.ActualWeight,
-                    TotalPrice = p.TotalPrice
-                }).ToList();
-
-                Order.Status = Products.Any(x => x.ActualWeight.HasValue && x.ActualWeight != 0)
-                    ? OrderStatus.Calculated
-                    : OrderStatus.Created;
+                await _orderService.InsertAsync(Order);
 
                 await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", "Замовлення створено!", "OK");
             }
             else
             {
-                Order.TotalPrice = TotalOrderPrice;
-                Order.TotalWeight = Products.Sum(x => x.ActualWeight);
-                Order.Products = Products.Select(p => new OrderProduct
-                {
-                    Id = p.Id,
-                    ProductName = p.ProductName,
-                    ProductPrice = p.ProductPrice,
-                    OrderedWeight = p.OrderedWeight,
-                    ActualWeight = p.ActualWeight,
-                    TotalPrice = p.TotalPrice
-                }).ToList();
-
-                Order.Status = Products.Any(x => x.ActualWeight.HasValue && x.ActualWeight != 0)
-                    ? OrderStatus.Calculated
-                    : OrderStatus.Created;
+                await _orderService.UpdateAsync(Order);
 
                 await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", "Замовлення змінено!", "OK");
             }
 
             await Shell.Current.GoToAsync("..");
         }
-
-        private 
     }
 }

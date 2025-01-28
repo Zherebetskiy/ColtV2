@@ -12,16 +12,24 @@ namespace Colt.UI.Desktop.ViewModels.Customers
     {
         private readonly ICustomerService _customerService;
         private readonly IProductService _productService;
+        private readonly IOrderService _orderService;
+        private readonly IPaymentService _paymentService;
 
+        public ObservableCollection<Order> Orders { get; }
+        public ObservableCollection<Payment> Payments { get; }
         public ObservableCollection<CustomerProduct> Products { get; }
         public ObservableCollection<CustomerProduct> SelectedProducts { get; }
 
         public ICommand SaveCustomerCommand { get; }
         public ICommand AddProductCommand { get; }
         public ICommand RemoveProductCommand { get; }
+
         public ICommand CreateOrderCommand { get; }
         public ICommand EditOrderCommand { get; }
         public ICommand DeleteOrderCommand { get; }
+
+        public ICommand CreatePaymentCommand { get; }
+        public ICommand DeletePaymentCommand { get; }
 
         private CustomerProduct _selectedProduct;
         public CustomerProduct SelectedProduct
@@ -49,15 +57,21 @@ namespace Colt.UI.Desktop.ViewModels.Customers
         {
             _customerService = ServiceHelper.GetService<ICustomerService>();
             _productService = ServiceHelper.GetService<IProductService>();
+            _orderService = ServiceHelper.GetService<IOrderService>();
+            _paymentService = ServiceHelper.GetService<IPaymentService>();
             SaveCustomerCommand = new Command(async () => await SaveCustomer());
             AddProductCommand = new Command(AddProduct);
             RemoveProductCommand = new Command<CustomerProduct>(async (product) => await RemoveProductAsync(product));
             DeleteOrderCommand = new Command<Order>(async (order) => await RemoveOrderAsync(order));
             CreateOrderCommand = new Command(async () => await NavigateToCreateOrderPage());
             EditOrderCommand = new Command<Order>(async (order) => await NavigateToEditOrderPage(order));
+            DeletePaymentCommand = new Command<Payment>(async (payment) => await DeletePaymentAsync(payment));
+            CreatePaymentCommand = new Command(CreatePayment);
             Customer = new Customer();
+            Orders = new ObservableCollection<Order>();
             Products = new ObservableCollection<CustomerProduct>();
             SelectedProducts = new ObservableCollection<CustomerProduct>();
+            Payments = new ObservableCollection<Payment>();
         }
 
         public async Task LoadProducts()
@@ -75,12 +89,49 @@ namespace Colt.UI.Desktop.ViewModels.Customers
                 });
             }
 
+            if (Customer.Id == default)
+            {
+                return;
+            }
+
             var customerProducts = await _customerService.GetProductsAsync(Customer.Id);
             
             SelectedProducts.Clear();
             foreach (var customerProduct in customerProducts)
             {
                 SelectedProducts.Add(customerProduct);
+            }
+        }
+
+        public async Task LoadOrders()
+        {
+            if (Customer.Id == default)
+            {
+                return;
+            }
+
+            var orders = await _orderService.GetByCustomerIdAsync(Customer.Id);
+
+            Orders.Clear();
+            foreach (var order in orders)
+            {
+                Orders.Add(order);
+            }
+        }
+
+        public async Task LoadPayments()
+        {
+            if (Customer.Id == default)
+            {
+                return;
+            }
+
+            var payments = await _paymentService.GetByCustomerIdAsync(Customer.Id);
+
+            Payments.Clear();
+            foreach (var payment in payments)
+            {
+                Payments.Add(payment);
             }
         }
 
@@ -92,6 +143,18 @@ namespace Colt.UI.Desktop.ViewModels.Customers
             }
         }
 
+        private void CreatePayment()
+        {
+            var newPayment = new Payment
+            {
+                Date = DateTime.Now,
+                Amount = 0,
+                CustomerId = Customer.Id
+            };
+
+            Payments.Insert(0, newPayment);
+        }
+
         private async Task SaveCustomer()
         {
             if (string.IsNullOrWhiteSpace(Customer.Name) || string.IsNullOrWhiteSpace(Customer.PhoneNumber))
@@ -101,6 +164,8 @@ namespace Colt.UI.Desktop.ViewModels.Customers
             }
 
             Customer.Products = SelectedProducts.ToList();
+            Customer.Orders = Orders.ToList();
+            Customer.Payments = Payments.ToList();
 
             if (Customer.Id == 0)
             {
@@ -123,6 +188,15 @@ namespace Colt.UI.Desktop.ViewModels.Customers
             }
         }
 
+        private async Task DeletePaymentAsync(Payment payment)
+        {
+            var isConfirmed = await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Підтвердження", "Ви впевнені, що хочете видалити цю оплату?", "Так", "Ні");
+            if (isConfirmed && Payments.Contains(payment))
+            {
+                Payments.Remove(payment);
+            }
+        }
+
         private async Task RemoveOrderAsync(Order order)
         {
             if(order.Status == OrderStatus.Delivered)
@@ -134,7 +208,9 @@ namespace Colt.UI.Desktop.ViewModels.Customers
             bool isConfirmed = await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Підтвердження", "Ви впевнені, що хочете видалити цe замовлення?", "Так", "Ні");
             if (isConfirmed)
             {
-                Customer.Orders.Remove(order);
+                Orders.Remove(order);
+
+                await _orderService.DeleteAsync(order.Id);
             }
         }
 

@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Colt.UI.Desktop.ViewModels.Customers"
+             xmlns:sys="clr-namespace:System;assembly=netstandard"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="Colt.UI.Desktop.Views.ModifyCustomerPage"
              BackgroundColor="{DynamicResource PageBackgroundColor}">
@@ -46,8 +47,8 @@
                                     <Frame Padding="5" Margin="2" BorderColor="{DynamicResource PrimaryColor}" CornerRadius="10" HasShadow="True">
                                         <Grid ColumnDefinitions="*,*,Auto" RowDefinitions="Auto" RowSpacing="2">
                                             <Label Grid.Row="0" Grid.Column="0" Text="{Binding Product.Name}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
-                                            <Entry Grid.Row="0" Grid.Column="1" Text="{Binding Price, Mode=TwoWay}" FontSize="16" TextColor="{DynamicResource SecondaryTextColor}" Keyboard="Numeric" />
-                                            <Button Grid.Row="0" Grid.Column="2" Text="Видалити" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=RemoveProductCommand}" CommandParameter="{Binding .}" BackgroundColor="Red" TextColor="White" CornerRadius="10" HeightRequest="30" WidthRequest="80" />
+                                            <Entry Grid.Row="0" Grid.Column="1" Text="{Binding Price, Mode=TwoWay, StringFormat='{}{0:N2}'}" FontSize="16" TextColor="{DynamicResource SecondaryTextColor}" Keyboard="Numeric" />
+                                            <Button Grid.Row="0" Grid.Column="2" Text="Видалити" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=RemoveProductCommand}" CommandParameter="{Binding .}" BackgroundColor="Red" TextColor="White" CornerRadius="10" />
                                         </Grid>
                                     </Frame>
                                 </DataTemplate>
@@ -73,7 +74,7 @@
                             FontAttributes="Bold"
                             HorizontalOptions="Start" />
 
-                        <CollectionView ItemsSource="{Binding Customer.Orders}" SelectionMode="None" Margin="5">
+                        <CollectionView ItemsSource="{Binding Orders}" SelectionMode="None" Margin="5">
                             <CollectionView.ItemsLayout>
                                 <LinearItemsLayout Orientation="Vertical" />
                             </CollectionView.ItemsLayout>
@@ -82,9 +83,9 @@
                                     <Frame Padding="5" Margin="2" BorderColor="{DynamicResource PrimaryColor}" CornerRadius="10" HasShadow="True">
                                         <Grid ColumnDefinitions="*,2*,2*,2*,2*,Auto,Auto" RowDefinitions="Auto" RowSpacing="2">
                                             <Label Grid.Row="0" Grid.Column="0" Text="{Binding Id}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
-                                            <Label Grid.Row="0" Grid.Column="1" Text="{Binding Date}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
-                                            <Label Grid.Row="0" Grid.Column="2" Text="{Binding Delivery}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
-                                            <Label Grid.Row="0" Grid.Column="3" Text="{Binding Status}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
+                                            <Label Grid.Row="0" Grid.Column="1" Text="{Binding Date, Converter={StaticResource DateTimeToStringConverter}}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
+                                            <Label Grid.Row="0" Grid.Column="2" Text="{Binding Delivery, Converter={StaticResource DateTimeToStringConverter}}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
+                                            <Label Grid.Row="0" Grid.Column="3" Text="{Binding Status, Converter={StaticResource EnumToStringConverter}}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
                                             <Label Grid.Row="0" Grid.Column="4" Text="{Binding TotalPrice}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
                                             <Button Grid.Row="0" Grid.Column="5" Text="Змінити" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=EditOrderCommand}" CommandParameter="{Binding .}" BackgroundColor="{DynamicResource PrimaryColor}" TextColor="White" CornerRadius="10" />
                                             <Button Grid.Row="0" Grid.Column="6" Text="Видалити" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=DeleteOrderCommand}" CommandParameter="{Binding .}" BackgroundColor="Red" TextColor="White" CornerRadius="10" />
@@ -102,7 +103,34 @@
                     <Label Text="Оплата (натисніть щоб розгорнути)" FontSize="18" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
                 </toolkit:Expander.Header>
                 <toolkit:Expander.Content>
-                    <Label Text="Оплата список" FontSize="18" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                    <StackLayout Spacing="10">
+                        <Button Text="Додати оплату"
+                            Command="{Binding CreatePaymentCommand}"
+                            BackgroundColor="{DynamicResource PrimaryColor}"
+                            TextColor="White"
+                            CornerRadius="10"
+                            HeightRequest="40"
+                            WidthRequest="150"
+                            FontAttributes="Bold"
+                            HorizontalOptions="Start" />
+
+                        <CollectionView ItemsSource="{Binding Payments}" SelectionMode="None" Margin="5">
+                            <CollectionView.ItemsLayout>
+                                <LinearItemsLayout Orientation="Vertical" />
+                            </CollectionView.ItemsLayout>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Frame Padding="5" Margin="2" BorderColor="{DynamicResource PrimaryColor}" CornerRadius="10" HasShadow="True">
+                                        <Grid ColumnDefinitions="*,*,Auto" RowDefinitions="Auto" RowSpacing="2">
+                                            <DatePicker Grid.Row="0" Grid.Column="0" Date="{Binding Date, Mode=TwoWay}"  MinimumDate="01/01/2024"/>
+                                            <Entry Grid.Row="0" Grid.Column="1"  Text="{Binding Amount, Mode=TwoWay, StringFormat='{}{0:N2}'}" Keyboard="Numeric" />
+                                            <Button Grid.Row="0" Grid.Column="2" Text="Видалити" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=DeletePaymentCommand}" CommandParameter="{Binding .}" BackgroundColor="Red" TextColor="White" CornerRadius="10" />
+                                        </Grid>
+                                    </Frame>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
                 </toolkit:Expander.Content>
             </toolkit:Expander>
 

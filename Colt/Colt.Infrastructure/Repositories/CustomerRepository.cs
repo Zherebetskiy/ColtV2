@@ -22,6 +22,7 @@ namespace Colt.Infrastructure.Repositories
             return _dbSet
                 .Where(x => x.Id == id)
                 .Include(x => x.Products)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(cancellationToken);
         }
 

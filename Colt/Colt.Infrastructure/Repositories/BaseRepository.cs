@@ -16,6 +16,7 @@ namespace Colt.Infrastructure.Repositories
 
         public virtual async Task<TEntity> AddAsync(TEntity entity, CancellationToken token)
         {
+            _dbContext.ChangeTracker.Clear();
             await _dbSet.AddAsync(entity, token);
 
             await _dbContext.SaveChangesAsync(token);
@@ -32,13 +33,16 @@ namespace Colt.Infrastructure.Repositories
 
         public virtual async Task<TEntity> GetByIdAsync(int id, CancellationToken token)
         {
-            var entity = await _dbSet.FindAsync(id, token);
+            var entity = await _dbSet
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id, token);
 
             return entity;
         }
 
         public virtual async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken token)
         {
+            _dbContext.ChangeTracker.Clear();
             _dbContext.GetSet<TEntity>().Update(entity);
 
             await _dbContext.SaveChangesAsync(token);
@@ -50,6 +54,7 @@ namespace Colt.Infrastructure.Repositories
         {
             try
             {
+                _dbContext.ChangeTracker.Clear();
                 _dbSet.Remove(entity);
 
                 await _dbContext.SaveChangesAsync(token);

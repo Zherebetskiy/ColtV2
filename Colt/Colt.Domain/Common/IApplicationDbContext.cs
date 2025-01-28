@@ -20,5 +20,7 @@ namespace Colt.Domain.Common
         DbSet<TEntity> GetSet<TEntity>() where TEntity : BaseEntity<int>;
 
         EntityEntry GetEntry(object entity);
+
+        ChangeTracker ChangeTracker { get; }
     }
 }

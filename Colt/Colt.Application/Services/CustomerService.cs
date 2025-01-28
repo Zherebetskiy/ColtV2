@@ -6,10 +6,14 @@ namespace Colt.Application.Services
     public class CustomerService : ICustomerService
     {
         private readonly ICustomerRepository _customerRepository;
+        private readonly IPaymentRepository _paymentRepository;
 
-        public CustomerService(ICustomerRepository customerRepository)
+        public CustomerService(
+            ICustomerRepository customerRepository,
+            IPaymentRepository paymentRepository)
         {
             _customerRepository = customerRepository;
+            _paymentRepository = paymentRepository;
         }
 
         public async Task<bool> DeleteAsync(int id)
@@ -28,7 +32,7 @@ namespace Colt.Application.Services
             if (string.IsNullOrWhiteSpace(customer.Name) || string.IsNullOrWhiteSpace(customer.PhoneNumber))
                 throw new ArgumentException("Name and PhoneNumber are required.");
 
-            if (customer.Products != null && customer.Products.Any())
+            if (customer.Products != null && customer.Products.Count != 0)
             {
                 foreach (var product in customer.Products)
                 {
@@ -53,6 +57,7 @@ namespace Colt.Application.Services
             existingCustomer.Notes = customer.Notes;
 
             await HandleProductsAsync(existingCustomer, customer);
+            await HandlePaymentsAsync(existingCustomer, customer);
 
             return await _customerRepository.UpdateAsync(existingCustomer, CancellationToken.None);
         }
@@ -78,6 +83,29 @@ namespace Colt.Application.Services
             {
                 var existingProduct = existingCustomer.Products.First(x => x.ProductId == product.ProductId);
                 existingProduct.Price = product.Price;
+            }
+        }
+
+        private async Task HandlePaymentsAsync(Customer existingCustomer, Customer customer)
+        {
+            var addedPayments = customer.Payments.Where(x => x.Id == 0).ToList();
+            var updatedPayments = customer.Payments.Where(x => x.Id != 0).ToList();
+            var removedPayments = existingCustomer.Payments
+                .Where(x => !customer.Payments.Any(y => x.Id == y.Id))
+                .ToList();
+
+            await _paymentRepository.DeletePaymentsAsync(removedPayments, CancellationToken.None);
+
+            foreach (var payment in addedPayments)
+            {
+                existingCustomer.Payments.Add(payment);
+            }
+
+            foreach (var payment in updatedPayments)
+            {
+                var existingPayment = existingCustomer.Payments.First(x => x.Id == payment.Id);
+                existingPayment.Amount = payment.Amount;
+                existingPayment.Date = payment.Date;
             }
         }
     }

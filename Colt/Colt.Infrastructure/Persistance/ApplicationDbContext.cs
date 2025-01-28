@@ -13,7 +13,6 @@ namespace Colt.Infrastructure.Persistance
 
         public ApplicationDbContext() : base()
         {
-
         }
 
         public ApplicationDbContext(
@@ -22,6 +21,8 @@ namespace Colt.Infrastructure.Persistance
         {
             _auditableEntitySaveChangesInterceptor = auditableEntitySaveChangesInterceptor;
         }
+
+        ChangeTracker IApplicationDbContext.ChangeTracker { get { return base.ChangeTracker; } }
 
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Product> Products { get; set; }

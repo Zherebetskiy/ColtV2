@@ -26,13 +26,13 @@ public partial class OrderPage : ContentPage
         }
     }
 
-    public Customer OrderId
+    public int OrderId
     {
         set
         {
             if (BindingContext is OrderViewModel viewModel)
             {
-                viewModel.Customer = value ?? new Customer();
+                viewModel.OrderId = value;
             }
         }
     }
