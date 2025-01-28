@@ -56,6 +56,17 @@ namespace Colt.UI.Desktop.ViewModels.Customers
             }
         }
 
+        private OrderDebtViewModel _debt;
+        public OrderDebtViewModel Debt
+        {
+            get => _debt;
+            set
+            {
+                _debt = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ModifyCustomerViewModel()
         {
             _customerService = ServiceHelper.GetService<ICustomerService>();
@@ -180,6 +191,14 @@ namespace Colt.UI.Desktop.ViewModels.Customers
             }
         }
 
+        public void CalculateDebt()
+        {
+            Debt = new OrderDebtViewModel
+            {
+                Produce = Orders.Where(x => x.TotalPrice.HasValue).Sum(x => x.TotalPrice.Value),
+                Receive = (decimal)Payments.Sum(x => x.Amount)
+            };
+        }
 
         private void AddProduct()
         {
