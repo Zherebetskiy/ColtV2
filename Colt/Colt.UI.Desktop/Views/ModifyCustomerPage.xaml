@@ -48,7 +48,7 @@
                                         <Grid ColumnDefinitions="*,*,Auto" RowDefinitions="Auto" RowSpacing="2">
                                             <Label Grid.Row="0" Grid.Column="0" Text="{Binding Product.Name}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
                                             <Entry Grid.Row="0" Grid.Column="1" Text="{Binding Price, Mode=TwoWay, StringFormat='{}{0:N2}'}" FontSize="16" TextColor="{DynamicResource SecondaryTextColor}" Keyboard="Numeric" />
-                                            <Button Grid.Row="0" Grid.Column="2" Text="Видалити" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=RemoveProductCommand}" CommandParameter="{Binding .}" BackgroundColor="Red" TextColor="White" CornerRadius="10" />
+                                            <ImageButton Grid.Row="0" Grid.Column="2" Source="iconsdelete.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=RemoveProductCommand}" CommandParameter="{Binding .}" CornerRadius="10" />
                                         </Grid>
                                     </Frame>
                                 </DataTemplate>
@@ -81,14 +81,16 @@
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
                                     <Frame Padding="5" Margin="2" BorderColor="{DynamicResource PrimaryColor}" CornerRadius="10" HasShadow="True">
-                                        <Grid ColumnDefinitions="*,2*,2*,2*,2*,Auto,Auto" RowDefinitions="Auto" RowSpacing="2">
+                                        <Grid ColumnDefinitions="*,2*,2*,2*,2*,Auto,Auto,Auto,Auto" RowDefinitions="Auto" RowSpacing="2">
                                             <Label Grid.Row="0" Grid.Column="0" Text="{Binding Id}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
                                             <Label Grid.Row="0" Grid.Column="1" Text="{Binding Date, Converter={StaticResource DateTimeToStringConverter}}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
                                             <Label Grid.Row="0" Grid.Column="2" Text="{Binding Delivery, Converter={StaticResource DateTimeToStringConverter}}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
                                             <Label Grid.Row="0" Grid.Column="3" Text="{Binding Status, Converter={StaticResource EnumToStringConverter}}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
                                             <Label Grid.Row="0" Grid.Column="4" Text="{Binding TotalPrice}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
-                                            <Button Grid.Row="0" Grid.Column="5" Text="Змінити" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=EditOrderCommand}" CommandParameter="{Binding .}" BackgroundColor="{DynamicResource PrimaryColor}" TextColor="White" CornerRadius="10" />
-                                            <Button Grid.Row="0" Grid.Column="6" Text="Видалити" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=DeleteOrderCommand}" CommandParameter="{Binding .}" BackgroundColor="Red" TextColor="White" CornerRadius="10" />
+                                            <ImageButton Grid.Row="0" Grid.Column="5" Source="iconsdeliver.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=DeliverOrderCommand}" CommandParameter="{Binding .}" BackgroundColor="{DynamicResource PrimaryColor}" CornerRadius="10" />
+                                            <ImageButton Grid.Row="0" Grid.Column="5" Source="iconsprint.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=PrintOrderCommand}" CommandParameter="{Binding .}" BackgroundColor="{DynamicResource PrimaryColor}" CornerRadius="10" />
+                                            <ImageButton Grid.Row="0" Grid.Column="5" Source="editicon.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=EditOrderCommand}" CommandParameter="{Binding .}" BackgroundColor="{DynamicResource PrimaryColor}" CornerRadius="10" />
+                                            <ImageButton Grid.Row="0" Grid.Column="6" Source="iconsdelete.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=DeleteOrderCommand}" CommandParameter="{Binding .}" CornerRadius="10" />
                                         </Grid>
                                     </Frame>
                                 </DataTemplate>
@@ -124,7 +126,7 @@
                                         <Grid ColumnDefinitions="*,*,Auto" RowDefinitions="Auto" RowSpacing="2">
                                             <DatePicker Grid.Row="0" Grid.Column="0" Date="{Binding Date, Mode=TwoWay}"  MinimumDate="01/01/2024"/>
                                             <Entry Grid.Row="0" Grid.Column="1"  Text="{Binding Amount, Mode=TwoWay, StringFormat='{}{0:N2}'}" Keyboard="Numeric" />
-                                            <Button Grid.Row="0" Grid.Column="2" Text="Видалити" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=DeletePaymentCommand}" CommandParameter="{Binding .}" BackgroundColor="Red" TextColor="White" CornerRadius="10" />
+                                            <ImageButton Grid.Row="0" Grid.Column="2" Source="iconsdelete.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=DeletePaymentCommand}" CommandParameter="{Binding .}" CornerRadius="10" />
                                         </Grid>
                                     </Frame>
                                 </DataTemplate>

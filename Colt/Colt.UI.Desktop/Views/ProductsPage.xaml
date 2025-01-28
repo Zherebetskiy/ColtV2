@@ -11,7 +11,7 @@
 
     <Grid Padding="20" RowDefinitions="Auto,Auto,*">
         <Button Grid.Row="0"
-                Text="Додти продукт"
+                Text="Додати продукт"
                 Command="{Binding NavigateToAddProductCommand}"
                 BackgroundColor="{DynamicResource PrimaryColor}"
                 TextColor="White"
@@ -39,8 +39,8 @@
                         <Grid ColumnDefinitions="*,*,Auto,Auto" RowDefinitions="Auto" RowSpacing="5">
                             <Label Grid.Row="0" Grid.Column="0" Text="{Binding Name}" FontSize="24" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
                             <Label Grid.Row="0" Grid.Column="1" Text="{Binding Description}" FontSize="18" TextColor="{DynamicResource SecondaryTextColor}" />
-                            <Button Grid.Row="0" Grid.Column="2" Text="Змінити" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ProductsViewModel}}, Path=EditProductCommand}" CommandParameter="{Binding .}" BackgroundColor="{DynamicResource PrimaryColor}" TextColor="White" CornerRadius="10" />
-                            <Button Grid.Row="0" Grid.Column="3" Text="Видалити" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ProductsViewModel}}, Path=DeleteProductCommand}" CommandParameter="{Binding .}" BackgroundColor="Red" TextColor="White" CornerRadius="10" />
+                            <ImageButton Grid.Row="0" Grid.Column="2" Source="editicon.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ProductsViewModel}}, Path=EditProductCommand}" CommandParameter="{Binding .}" BackgroundColor="{DynamicResource PrimaryColor}" CornerRadius="10" HeightRequest="24" WidthRequest="24" />
+                            <ImageButton Grid.Row="0" Grid.Column="3" Source="iconsdelete.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ProductsViewModel}}, Path=DeleteProductCommand}" CommandParameter="{Binding .}" CornerRadius="10" />
                         </Grid>
                     </Frame>
                 </DataTemplate>

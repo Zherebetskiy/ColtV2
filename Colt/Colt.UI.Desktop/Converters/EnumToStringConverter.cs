@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace Colt.UI.Desktop.Converters
 {
-    internal class EnumToStringConverter : IValueConverter
+    public class EnumToStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

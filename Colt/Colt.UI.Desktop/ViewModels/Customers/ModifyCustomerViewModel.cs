@@ -27,6 +27,8 @@ namespace Colt.UI.Desktop.ViewModels.Customers
         public ICommand CreateOrderCommand { get; }
         public ICommand EditOrderCommand { get; }
         public ICommand DeleteOrderCommand { get; }
+        public ICommand DeliverOrderCommand { get; }
+        public ICommand PrintOrderCommand { get; }
 
         public ICommand CreatePaymentCommand { get; }
         public ICommand DeletePaymentCommand { get; }
@@ -65,6 +67,8 @@ namespace Colt.UI.Desktop.ViewModels.Customers
             DeleteOrderCommand = new Command<Order>(async (order) => await RemoveOrderAsync(order));
             CreateOrderCommand = new Command(async () => await NavigateToCreateOrderPage());
             EditOrderCommand = new Command<Order>(async (order) => await NavigateToEditOrderPage(order));
+            DeliverOrderCommand = new Command<Order>(async (order) => await DeliverOrder(order));
+            PrintOrderCommand = new Command<Order>(async (order) => await PrintOrder(order));
             DeletePaymentCommand = new Command<Payment>(async (payment) => await DeletePaymentAsync(payment));
             CreatePaymentCommand = new Command(CreatePayment);
             Customer = new Customer();
@@ -118,6 +122,32 @@ namespace Colt.UI.Desktop.ViewModels.Customers
                 Orders.Add(order);
             }
         }
+        
+        public async Task DeliverOrder(Order order)
+        {
+            if (Customer.Id == default)
+            {
+                return;
+            }
+
+            var isConfirmed = await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Підтвердження", "Ще не виконувалась операція зважування. Ви впевнені, що хочете позначити замовлення як доставлене?", "Так", "Ні");
+            if (isConfirmed)
+            {
+                var orders = await _orderService.GetByCustomerIdAsync(Customer.Id);
+                await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", "Замовлення доставлено!", "OK");
+            }
+
+        }
+
+        public async Task PrintOrder(Order order)
+        {
+            if (Customer.Id == default)
+            {
+                return;
+            }
+
+            var orders = await _orderService.GetByCustomerIdAsync(Customer.Id);
+        }
 
         public async Task LoadPayments()
         {
@@ -134,6 +164,7 @@ namespace Colt.UI.Desktop.ViewModels.Customers
                 Payments.Add(payment);
             }
         }
+
 
         private void AddProduct()
         {
