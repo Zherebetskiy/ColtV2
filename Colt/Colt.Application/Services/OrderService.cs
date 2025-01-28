@@ -37,6 +37,13 @@ namespace Colt.Application.Services
             await _orderRepository.AddAsync(order, CancellationToken.None);
         }
 
+        public async Task<Order> DeliverAsync(Order order)
+        {
+            order.Status = Domain.Enums.OrderStatus.Delivered;
+
+            return await _orderRepository.UpdateAsync(order, CancellationToken.None);
+        }
+
         public async Task<Order> UpdateAsync(Order order)
         {
             order.Products = order.Products

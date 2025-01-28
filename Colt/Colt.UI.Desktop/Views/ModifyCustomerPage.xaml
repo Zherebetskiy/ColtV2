@@ -45,10 +45,11 @@
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
                                     <Frame Padding="5" Margin="2" BorderColor="{DynamicResource PrimaryColor}" CornerRadius="10" HasShadow="True">
-                                        <Grid ColumnDefinitions="*,*,Auto" RowDefinitions="Auto" RowSpacing="2">
+                                        <Grid ColumnDefinitions="*,*,*,Auto" RowDefinitions="Auto" RowSpacing="2">
                                             <Label Grid.Row="0" Grid.Column="0" Text="{Binding Product.Name}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
-                                            <Entry Grid.Row="0" Grid.Column="1" Text="{Binding Price, Mode=TwoWay, StringFormat='{}{0:N2}'}" FontSize="16" TextColor="{DynamicResource SecondaryTextColor}" Keyboard="Numeric" />
-                                            <ImageButton Grid.Row="0" Grid.Column="2" Source="iconsdelete.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=RemoveProductCommand}" CommandParameter="{Binding .}" CornerRadius="10" />
+                                            <Label Grid.Row="0" Grid.Column="1" Text="{Binding Product.MeasurementType, Converter={StaticResource MeasurmentToStringConverter}}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
+                                            <Entry Grid.Row="0" Grid.Column="2" Text="{Binding Price, Mode=TwoWay, StringFormat='{}{0:N2}'}" FontSize="16" TextColor="{DynamicResource SecondaryTextColor}" Keyboard="Numeric" />
+                                            <ImageButton Grid.Row="0" Grid.Column="3" Source="iconsdelete.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=RemoveProductCommand}" CommandParameter="{Binding .}" CornerRadius="10" />
                                         </Grid>
                                     </Frame>
                                 </DataTemplate>

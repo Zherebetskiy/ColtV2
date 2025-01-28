@@ -6,4 +6,5 @@
 
     <conv:DateTimeToStringConverter x:Key="DateTimeToStringConverter" />
     <conv:EnumToStringConverter x:Key="EnumToStringConverter" />
+    <conv:MeasurmentToStringConverter x:Key="MeasurmentToStringConverter" />
 </ResourceDictionary>

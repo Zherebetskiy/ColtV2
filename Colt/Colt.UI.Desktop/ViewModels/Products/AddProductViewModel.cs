@@ -1,6 +1,8 @@
 ﻿using Colt.Application.Interfaces;
 using Colt.Domain.Entities;
+using Colt.Domain.Enums;
 using Colt.UI.Desktop.Helpers;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace Colt.UI.Desktop.ViewModels.Products
@@ -14,12 +16,25 @@ namespace Colt.UI.Desktop.ViewModels.Products
             get => _product;
             set => SetProperty(ref _product, value);
         }
+
+        public ObservableCollection<MeasurementType> MeasurementTypes { get; }
+        public MeasurementType SelectedMeasurementType
+        {
+            get => Product.MeasurementType;
+            set
+            {
+                Product.MeasurementType = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ICommand SaveProductCommand { get; }
 
         public AddProductViewModel()
         {
             _productService = ServiceHelper.GetService<IProductService>();
             SaveProductCommand = new Command(async () => await SaveProduct());
+            MeasurementTypes = new ObservableCollection<MeasurementType>(Enum.GetValues(typeof(MeasurementType)).Cast<MeasurementType>());
             Product = new Product();
         }
 
@@ -30,6 +45,8 @@ namespace Colt.UI.Desktop.ViewModels.Products
                 await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", "Назва обов'язкова!", "OK");
                 return;
             }
+
+            Product.MeasurementType = SelectedMeasurementType;
 
             if (Product.Id == 0)
             {

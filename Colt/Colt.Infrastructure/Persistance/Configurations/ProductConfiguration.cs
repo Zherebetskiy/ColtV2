@@ -1,6 +1,8 @@
 ﻿using Colt.Domain.Entities;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
+using Colt.Domain.Enums;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Colt.Infrastructure.Persistance.Configurations
 {
@@ -17,6 +19,11 @@ namespace Colt.Infrastructure.Persistance.Configurations
             builder.Property(x => x.Description)
                 .HasMaxLength(700)
                 .IsRequired(false);
+
+            builder.Property(x => x.MeasurementType)
+                .HasDefaultValue(MeasurementType.Weight)
+                .HasConversion<EnumToStringConverter<MeasurementType>>()
+                .IsRequired(true);
 
             builder.Property(x => x.CreatedDate)
                 .IsRequired(true);

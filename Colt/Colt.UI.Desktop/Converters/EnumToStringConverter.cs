@@ -18,6 +18,16 @@ namespace Colt.UI.Desktop.Converters
                 };
             }
 
+            if (value is MeasurementType measurementType)
+            {
+                return measurementType switch
+                {
+                    MeasurementType.Weight => "Вага",
+                    MeasurementType.Quantity => "Кількість",
+                    _ => value
+                };
+            }
+
             return value;
         }
 
@@ -30,6 +40,8 @@ namespace Colt.UI.Desktop.Converters
                     "Нове" => OrderStatus.Created,
                     "Поважено" => OrderStatus.Calculated,
                     "Доставлено" => OrderStatus.Delivered,
+                    "Вага" => MeasurementType.Weight,
+                    "Кількість" => MeasurementType.Quantity,
                     _ => value
                 };
             }

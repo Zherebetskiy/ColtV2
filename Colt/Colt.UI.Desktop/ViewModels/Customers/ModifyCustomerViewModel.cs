@@ -3,6 +3,7 @@ using Colt.Domain.Entities;
 using Colt.Domain.Enums;
 using Colt.UI.Desktop.Helpers;
 using Colt.UI.Desktop.Views;
+using Microsoft.UI.Xaml.Controls;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -130,13 +131,27 @@ namespace Colt.UI.Desktop.ViewModels.Customers
                 return;
             }
 
-            var isConfirmed = await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Підтвердження", "Ще не виконувалась операція зважування. Ви впевнені, що хочете позначити замовлення як доставлене?", "Так", "Ні");
-            if (isConfirmed)
+            if (order.Status == OrderStatus.Delivered)
             {
-                var orders = await _orderService.GetByCustomerIdAsync(Customer.Id);
-                await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", "Замовлення доставлено!", "OK");
+                await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", "Замовлення вже доставлено!", "OK");
+                return;
             }
 
+            if (order.Status == OrderStatus.Created)
+            {
+                var isConfirmed = await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Підтвердження", "Ще не виконувалась операція зважування. Ви впевнені, що хочете позначити замовлення як доставлене?", "Так", "Ні");
+                if (isConfirmed)
+                {
+                    await _orderService.DeliverAsync(order);
+                }
+            }
+            else
+            {
+                await _orderService.DeliverAsync(order);
+            }
+
+            await LoadOrders();
+            await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", "Замовлення доставлено!", "OK");
         }
 
         public async Task PrintOrder(Order order)

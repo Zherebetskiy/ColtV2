@@ -9,6 +9,7 @@ namespace Colt.Application.Interfaces
         Task<List<Order>> GetByCustomerIdAsync(int customerId);
         Task InsertAsync(Order order);
         Task<Order> UpdateAsync(Order order);
+        Task<Order> DeliverAsync(Order order);
         Task<bool> DeleteAsync(int id);
     }
 }

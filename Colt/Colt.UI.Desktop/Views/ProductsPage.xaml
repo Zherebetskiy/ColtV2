@@ -20,12 +20,6 @@
                 FontAttributes="Bold"
                 HorizontalOptions="FillAndExpand" />
 
-        <!-- Column Headings -->
-        <Grid Grid.Row="1" ColumnDefinitions="*,*,Auto,Auto" Padding="10" Margin="5">
-            <Label Grid.Column="0" Text="Назва" FontSize="24" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
-            <Label Grid.Column="1" Text="Опис" FontSize="24" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
-        </Grid>
-
         <CollectionView Grid.Row="2"
                         ItemsSource="{Binding Products}"
                         SelectionMode="None"
@@ -33,14 +27,22 @@
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Vertical" />
             </CollectionView.ItemsLayout>
+            <CollectionView.Header>
+                <Grid Grid.Row="1" ColumnDefinitions="*,*,*" Padding="10" Margin="5">
+                    <Label Grid.Column="0" Text="Назва" FontSize="24" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                    <Label Grid.Column="1" Text="Тип вимірювання" FontSize="24" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                    <Label Grid.Column="2" Text="Опис" FontSize="24" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                </Grid>
+            </CollectionView.Header>
             <CollectionView.ItemTemplate>
                 <DataTemplate>  
                     <Frame Padding="10" Margin="5" BorderColor="{DynamicResource PrimaryColor}" CornerRadius="10" HasShadow="True">
-                        <Grid ColumnDefinitions="*,*,Auto,Auto" RowDefinitions="Auto" RowSpacing="5">
+                        <Grid ColumnDefinitions="*,*,*,Auto,Auto" RowDefinitions="Auto" RowSpacing="5">
                             <Label Grid.Row="0" Grid.Column="0" Text="{Binding Name}" FontSize="24" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
-                            <Label Grid.Row="0" Grid.Column="1" Text="{Binding Description}" FontSize="18" TextColor="{DynamicResource SecondaryTextColor}" />
-                            <ImageButton Grid.Row="0" Grid.Column="2" Source="editicon.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ProductsViewModel}}, Path=EditProductCommand}" CommandParameter="{Binding .}" BackgroundColor="{DynamicResource PrimaryColor}" CornerRadius="10" HeightRequest="24" WidthRequest="24" />
-                            <ImageButton Grid.Row="0" Grid.Column="3" Source="iconsdelete.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ProductsViewModel}}, Path=DeleteProductCommand}" CommandParameter="{Binding .}" CornerRadius="10" />
+                            <Label Grid.Row="0" Grid.Column="1" Text="{Binding MeasurementType, Converter={StaticResource EnumToStringConverter}}" FontSize="18" TextColor="{DynamicResource SecondaryTextColor}" />
+                            <Label Grid.Row="0" Grid.Column="2" Text="{Binding Description}" FontSize="18" TextColor="{DynamicResource SecondaryTextColor}" />
+                            <ImageButton Grid.Row="0" Grid.Column="3" Source="editicon.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ProductsViewModel}}, Path=EditProductCommand}" CommandParameter="{Binding .}" BackgroundColor="{DynamicResource PrimaryColor}" CornerRadius="10" HeightRequest="24" WidthRequest="24" />
+                            <ImageButton Grid.Row="0" Grid.Column="4" Source="iconsdelete.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ProductsViewModel}}, Path=DeleteProductCommand}" CommandParameter="{Binding .}" CornerRadius="10" />
                         </Grid>
                     </Frame>
                 </DataTemplate>

@@ -12,6 +12,10 @@
     <VerticalStackLayout Padding="20" Spacing="20">
         <Entry Text="{Binding Product.Name}" Placeholder="Назва" />
         <Entry Text="{Binding Product.Description}" Placeholder="Опис" />
+        <Picker Title="Тип вимірювання"
+            ItemsSource="{Binding MeasurementTypes, Converter={StaticResource EnumToStringConverter}}"
+            SelectedItem="{Binding SelectedMeasurementType}"
+            ItemDisplayBinding="{Binding ., Converter={StaticResource EnumToStringConverter}}" />
         <Button Text="Зберегти" Command="{Binding SaveProductCommand}" BackgroundColor="{DynamicResource PrimaryColor}" TextColor="White" CornerRadius="10" HeightRequest="50" FontAttributes="Bold" HorizontalOptions="FillAndExpand" />
     </VerticalStackLayout>
 </ContentPage>

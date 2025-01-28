@@ -128,9 +128,15 @@ namespace Colt.UI.Desktop.ViewModels.Orders
 
         private async Task SaveOrder()
         {
+            bool isConfirmed = true;
             if (Order.Status == OrderStatus.Delivered)
             {
-                await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", "Не можна змінити доставлене замовлення!", "OK");
+                isConfirmed = await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Підтвердження", "Замовлення вже доставлено, ви впевнені що бажаєте змінити його?", "Так", "Ні");
+            }
+
+            if (!isConfirmed)
+            {
+                return;
             }
 
             Order.TotalPrice = TotalOrderPrice;

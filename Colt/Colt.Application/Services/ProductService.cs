@@ -21,7 +21,9 @@ namespace Colt.Application.Services
 
         public async Task<List<Product>> GetAllAsync()
         {
-            return await _productRepository.GetAsync(CancellationToken.None);
+            return (await _productRepository.GetAsync(CancellationToken.None))
+                .OrderBy(x => x.Name)
+                .ToList();
         }
 
         public async Task InsertAsync(Product product)
