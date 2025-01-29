@@ -159,7 +159,7 @@
                             </CollectionView.ItemTemplate>
                             <CollectionView.Footer>
                                 <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
-                                    <Button Text="Попередня" Command="{Binding LoadPaymentsPageCommand}" CommandParameter="{Binding CurrentPaymentPage, Converter={StaticResource DecrementConverter}}" IsEnabled="{Binding CurrentOrderPage, Converter={StaticResource GreaterThanOneConverter}}" />
+                                    <Button Text="Попередня" Command="{Binding LoadPaymentsPageCommand}" CommandParameter="{Binding CurrentPaymentPage, Converter={StaticResource DecrementConverter}}" IsEnabled="{Binding CurrentPaymentPage, Converter={StaticResource GreaterThanOneConverter}}" />
                                     <Label Text="{Binding CurrentPaymentPage}" VerticalOptions="Center" HorizontalOptions="Center" Margin="10"/>
                                     <Button Text="Наступна" Command="{Binding LoadPaymentsPageCommand}" CommandParameter="{Binding CurrentOrderPage, Converter={StaticResource IncrementConverter}}" IsEnabled="{Binding NotLastPaymentPage}" />
                                 </StackLayout>

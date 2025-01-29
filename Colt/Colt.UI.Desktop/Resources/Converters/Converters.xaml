@@ -10,3 +10,4 @@
     <conv:GreaterThanOneConverter x:Key="GreaterThanOneConverter" />
     <conv:DecrementConverter x:Key="DecrementConverter" />
     <conv:IncrementConverter x:Key="IncrementConverter" />
+</ResourceDictionary>
