@@ -1,5 +1,5 @@
 ﻿using Colt.Domain.Common;
-using System.ComponentModel;
+using Colt.Domain.Enums;
 
 namespace Colt.Domain.Entities
 { 
@@ -10,6 +10,7 @@ namespace Colt.Domain.Entities
 
         public string ProductName { get; set; }
         public decimal? ProductPrice { get; set; }
+        public MeasurementType? ProductType { get; set; }
 
         public double? OrderedWeight { get; set; }
 

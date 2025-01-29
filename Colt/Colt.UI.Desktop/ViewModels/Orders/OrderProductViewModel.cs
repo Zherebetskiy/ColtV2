@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Colt.Domain.Enums;
+using System.ComponentModel;
 
 namespace Colt.UI.Desktop.ViewModels.Orders
 {
@@ -11,6 +12,7 @@ namespace Colt.UI.Desktop.ViewModels.Orders
         public string ProductName { get; set; }
 
         public decimal? ProductPrice { get; set; }
+        public MeasurementType? ProductType { get; set; }
 
         public double? OrderedWeight{ get; set; }
 

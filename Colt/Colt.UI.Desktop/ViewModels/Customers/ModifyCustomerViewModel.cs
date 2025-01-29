@@ -3,7 +3,6 @@ using Colt.Domain.Entities;
 using Colt.Domain.Enums;
 using Colt.UI.Desktop.Helpers;
 using Colt.UI.Desktop.Views;
-using Microsoft.UI.Xaml.Controls;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -196,7 +195,7 @@ namespace Colt.UI.Desktop.ViewModels.Customers
             Debt = new OrderDebtViewModel
             {
                 Produce = Orders.Where(x => x.TotalPrice.HasValue).Sum(x => x.TotalPrice.Value),
-                Receive = (decimal)Payments.Sum(x => x.Amount)
+                Receive = Payments.Sum(x => x.Amount)
             };
         }
 
