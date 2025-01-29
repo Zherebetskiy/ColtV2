@@ -1,4 +1,5 @@
 ﻿using Colt.Application.Interfaces;
+using Colt.Domain.Common;
 using Colt.Domain.Entities;
 using Colt.Domain.Enums;
 using Colt.UI.Desktop.Helpers;
@@ -55,8 +56,8 @@ namespace Colt.UI.Desktop.ViewModels.Customers
             }
         }
 
-        private OrderDebtViewModel _debt;
-        public OrderDebtViewModel Debt
+        private OrderDebtModel _debt;
+        public OrderDebtModel Debt
         {
             get => _debt;
             set
@@ -134,6 +135,7 @@ namespace Colt.UI.Desktop.ViewModels.Customers
             LoadOrdersPageCommand = new Command<int>(async (page) => await LoadOrdersPage(page));
             LoadPaymentsPageCommand = new Command<int>(async (page) => await LoadPaymentsPage(page));
             Customer = new Customer();
+            Debt = new OrderDebtModel();
             Orders = new ObservableCollection<Order>();
             Products = new ObservableCollection<CustomerProduct>();
             SelectedProducts = new ObservableCollection<CustomerProduct>();
@@ -209,13 +211,14 @@ namespace Colt.UI.Desktop.ViewModels.Customers
             var orders = await _orderService.GetByCustomerIdAsync(Customer.Id);
         }
 
-        public void CalculateDebt()
+        public async Task CalculateDebt()
         {
-            Debt = new OrderDebtViewModel
+            if (Customer.Id == default)
             {
-                Produce = Orders.Where(x => x.TotalPrice.HasValue).Sum(x => x.TotalPrice.Value),
-                Receive = Payments.Sum(x => x.Amount)
-            };
+                return;
+            }
+
+            Debt = await _customerService.GetDebtAsync(Customer.Id);
         }
 
         public async Task LoadOrdersPage(int page)

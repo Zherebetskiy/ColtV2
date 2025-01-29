@@ -1,4 +1,5 @@
 ﻿using Colt.Application.Interfaces;
+using Colt.Domain.Common;
 using Colt.Domain.Entities;
 using Colt.Domain.Repositories;
 namespace Colt.Application.Services
@@ -60,6 +61,11 @@ namespace Colt.Application.Services
             await HandlePaymentsAsync(existingCustomer, customer);
 
             return await _customerRepository.UpdateAsync(existingCustomer, CancellationToken.None);
+        }
+
+        public Task<OrderDebtModel> GetDebtAsync(int id)
+        {
+            return _customerRepository.GetDebtAsync(id, CancellationToken.None);
         }
 
         private async Task HandleProductsAsync(Customer existingCustomer, Customer customer)

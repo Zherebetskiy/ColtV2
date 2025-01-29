@@ -27,6 +27,23 @@ namespace Colt.Infrastructure.Repositories
                 .FirstOrDefaultAsync(cancellationToken);
         }
 
+        public async Task<OrderDebtModel> GetDebtAsync(int id, CancellationToken cancellationToken)
+        {
+            var paymentsAmpunt = await _dbContext.GetSet<Payment>()
+                .Where(x => x.CustomerId == id)
+                .SumAsync(x => x.Amount, cancellationToken);
+
+            var ordersAmpunt = await _dbContext.GetSet<Order>()
+                .Where(x => x.CustomerId == id && x.TotalPrice.HasValue)
+                .SumAsync(x => x.TotalPrice, cancellationToken);
+
+            return new OrderDebtModel
+            {
+                Produce = ordersAmpunt.Value,
+                Receive = paymentsAmpunt
+            };
+        }
+
         public Task<Customer> GetWithProductsAsync(int id, CancellationToken cancellationToken)
         {
             return _dbSet

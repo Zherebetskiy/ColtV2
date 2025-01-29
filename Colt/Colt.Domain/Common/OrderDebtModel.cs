@@ -1,6 +1,6 @@
-﻿namespace Colt.UI.Desktop.ViewModels.Customers
+﻿namespace Colt.Domain.Common
 {
-    public class OrderDebtViewModel
+    public class OrderDebtModel
     {
         public decimal Produce { get; set; }
         public decimal Receive { get; set; }
