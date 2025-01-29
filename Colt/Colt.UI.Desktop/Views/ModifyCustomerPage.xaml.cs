@@ -33,7 +33,7 @@ public partial class ModifyCustomerPage : ContentPage
             await ViewModel.LoadProducts();
             await ViewModel.LoadOrdersPage(1);
             await ViewModel.LoadPaymentsPage(1);
-            ViewModel.CalculateDebt();
+            await ViewModel.CalculateDebt();
         }
     }
 }

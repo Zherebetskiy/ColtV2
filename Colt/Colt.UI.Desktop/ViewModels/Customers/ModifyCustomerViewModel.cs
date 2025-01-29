@@ -294,11 +294,13 @@ namespace Colt.UI.Desktop.ViewModels.Customers
             if (Customer.Id == 0)
             {
                 await _customerService.InsertAsync(Customer);
+                await CalculateDebt();
                 await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", "Клієнт додано!", "OK");
             }
             else
             {
                 await _customerService.UpdateAsync(Customer);
+                await CalculateDebt();
                 await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", "Клієнт змінено!", "OK");
             }
         }
