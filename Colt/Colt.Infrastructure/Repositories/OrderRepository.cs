@@ -25,6 +25,7 @@ namespace Colt.Infrastructure.Repositories
 
             var result = await _dbSet
                 .Where(x => x.CustomerId == customerId)
+                .OrderByDescending(x => x.Date)
                 .Skip(skip)
                 .Take(take)
                 .ToListAsync(cancellationToken);
