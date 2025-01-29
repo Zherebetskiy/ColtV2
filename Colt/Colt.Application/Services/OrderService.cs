@@ -1,4 +1,5 @@
 ﻿using Colt.Application.Interfaces;
+using Colt.Domain.Common;
 using Colt.Domain.Entities;
 using Colt.Domain.Repositories;
 
@@ -21,6 +22,11 @@ namespace Colt.Application.Services
         public async Task<List<Order>> GetAllAsync()
         {
             return await _orderRepository.GetAsync(CancellationToken.None);
+        }
+
+        public async Task<PaginationModel<Order>> GetPaginatedAsync(int customerId, int skip, int take)
+        {
+            return await _orderRepository.GetPaginatedAsync(customerId, skip, take, CancellationToken.None);
         }
 
         public async Task<List<Order>> GetByCustomerIdAsync(int customerId)

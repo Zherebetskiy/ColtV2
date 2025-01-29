@@ -1,4 +1,5 @@
 ﻿using Colt.Application.Interfaces;
+using Colt.Domain.Common;
 using Colt.Domain.Entities;
 using Colt.Domain.Repositories;
 
@@ -16,6 +17,11 @@ namespace Colt.Application.Services
         public Task<List<Payment>> GetByCustomerIdAsync(int customerId)
         {
             return _paymentRepository.GetByCustomerIdAsync(customerId, CancellationToken.None);
+        }
+
+        public async Task<PaginationModel<Payment>> GetPaginatedAsync(int customerId, int skip, int take)
+        {
+            return await _paymentRepository.GetPaginatedAsync(customerId, skip, take, CancellationToken.None);
         }
     }
 }

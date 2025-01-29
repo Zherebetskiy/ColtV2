@@ -31,8 +31,8 @@ public partial class ModifyCustomerPage : ContentPage
         if (ViewModel != null)
         {
             await ViewModel.LoadProducts();
-            await ViewModel.LoadOrders();
-            await ViewModel.LoadPayments();
+            await ViewModel.LoadOrdersPage(1);
+            await ViewModel.LoadPaymentsPage(1);
             ViewModel.CalculateDebt();
         }
     }

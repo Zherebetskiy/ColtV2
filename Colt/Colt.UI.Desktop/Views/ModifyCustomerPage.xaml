@@ -24,8 +24,8 @@
                 <Label Grid.Row="1" Grid.Column="0" Text="Оплачено на суму: " FontSize="14" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
                 <Label Grid.Row="1" Grid.Column="1" Text="{Binding Debt.Receive}" FontSize="14" TextColor="{DynamicResource SecondaryTextColor}" />
 
-                <Label Grid.Row="2" Grid.Column="0" Text="Борг: " FontSize="14" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
-                <Label Grid.Row="2" Grid.Column="1" Text="{Binding Debt.Debt}" FontSize="14" TextColor="{DynamicResource SecondaryTextColor}" />
+                <Label Grid.Row="2" Grid.Column="0" Text="Борг: " FontSize="14" FontAttributes="Bold" TextColor="Red" />
+                <Label Grid.Row="2" Grid.Column="1" Text="{Binding Debt.Debt}" FontSize="14" TextColor="Red" />
             </Grid>
 
             <toolkit:Expander>
@@ -114,6 +114,13 @@
                                     </Frame>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
+                            <CollectionView.Footer>
+                                <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
+                                    <Button Text="Попередня" Command="{Binding LoadOrdersPageCommand}" CommandParameter="{Binding CurrentOrderPage, Converter={StaticResource DecrementConverter}}" IsEnabled="{Binding CurrentOrderPage, Converter={StaticResource GreaterThanOneConverter}}" />
+                                    <Label Text="{Binding CurrentOrderPage}" VerticalOptions="Center" HorizontalOptions="Center" Margin="10"/>
+                                    <Button Text="Наступна" Command="{Binding LoadOrdersPageCommand}" CommandParameter="{Binding CurrentOrderPage, Converter={StaticResource IncrementConverter}}" IsEnabled="{Binding NotLastOrderPage}" />
+                                </StackLayout>
+                            </CollectionView.Footer>
                         </CollectionView>
                     </StackLayout>
                 </toolkit:Expander.Content>
@@ -150,6 +157,13 @@
                                     </Frame>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
+                            <CollectionView.Footer>
+                                <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
+                                    <Button Text="Попередня" Command="{Binding LoadPaymentsPageCommand}" CommandParameter="{Binding CurrentPaymentPage, Converter={StaticResource DecrementConverter}}" IsEnabled="{Binding CurrentOrderPage, Converter={StaticResource GreaterThanOneConverter}}" />
+                                    <Label Text="{Binding CurrentPaymentPage}" VerticalOptions="Center" HorizontalOptions="Center" Margin="10"/>
+                                    <Button Text="Наступна" Command="{Binding LoadPaymentsPageCommand}" CommandParameter="{Binding CurrentOrderPage, Converter={StaticResource IncrementConverter}}" IsEnabled="{Binding NotLastPaymentPage}" />
+                                </StackLayout>
+                            </CollectionView.Footer>
                         </CollectionView>
                     </StackLayout>
                 </toolkit:Expander.Content>

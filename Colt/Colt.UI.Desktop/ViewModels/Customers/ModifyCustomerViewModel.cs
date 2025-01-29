@@ -66,6 +66,55 @@ namespace Colt.UI.Desktop.ViewModels.Customers
             }
         }
 
+        public ICommand LoadOrdersPageCommand { get; }
+        public ICommand LoadPaymentsPageCommand { get; }
+
+        private int _currentOrderPage = 1;
+        private bool _notLastOrderPage;
+        private int _currentPaymentPage = 1;
+        private bool _notLastPaymentPage;
+        private const int PageSize = 10;
+
+        public int CurrentOrderPage
+        {
+            get => _currentOrderPage;
+            set
+            {
+                _currentOrderPage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool NotLastOrderPage
+        {
+            get => _notLastOrderPage;
+            set
+            {
+                _notLastOrderPage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int CurrentPaymentPage
+        {
+            get => _currentPaymentPage;
+            set
+            {
+                _currentPaymentPage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool NotLastPaymentPage
+        {
+            get => _notLastPaymentPage;
+            set
+            {
+                _notLastPaymentPage = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ModifyCustomerViewModel()
         {
             _customerService = ServiceHelper.GetService<ICustomerService>();
@@ -82,6 +131,8 @@ namespace Colt.UI.Desktop.ViewModels.Customers
             PrintOrderCommand = new Command<Order>(async (order) => await PrintOrder(order));
             DeletePaymentCommand = new Command<Payment>(async (payment) => await DeletePaymentAsync(payment));
             CreatePaymentCommand = new Command(CreatePayment);
+            LoadOrdersPageCommand = new Command<int>(async (page) => await LoadOrdersPage(page));
+            LoadPaymentsPageCommand = new Command<int>(async (page) => await LoadPaymentsPage(page));
             Customer = new Customer();
             Orders = new ObservableCollection<Order>();
             Products = new ObservableCollection<CustomerProduct>();
@@ -118,22 +169,6 @@ namespace Colt.UI.Desktop.ViewModels.Customers
             }
         }
 
-        public async Task LoadOrders()
-        {
-            if (Customer.Id == default)
-            {
-                return;
-            }
-
-            var orders = await _orderService.GetByCustomerIdAsync(Customer.Id);
-
-            Orders.Clear();
-            foreach (var order in orders)
-            {
-                Orders.Add(order);
-            }
-        }
-        
         public async Task DeliverOrder(Order order)
         {
             if (Customer.Id == default)
@@ -160,7 +195,7 @@ namespace Colt.UI.Desktop.ViewModels.Customers
                 await _orderService.DeliverAsync(order);
             }
 
-            await LoadOrders();
+            await LoadOrdersPage(CurrentOrderPage);
             await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", "Замовлення доставлено!", "OK");
         }
 
@@ -174,22 +209,6 @@ namespace Colt.UI.Desktop.ViewModels.Customers
             var orders = await _orderService.GetByCustomerIdAsync(Customer.Id);
         }
 
-        public async Task LoadPayments()
-        {
-            if (Customer.Id == default)
-            {
-                return;
-            }
-
-            var payments = await _paymentService.GetByCustomerIdAsync(Customer.Id);
-
-            Payments.Clear();
-            foreach (var payment in payments)
-            {
-                Payments.Add(payment);
-            }
-        }
-
         public void CalculateDebt()
         {
             Debt = new OrderDebtViewModel
@@ -197,6 +216,44 @@ namespace Colt.UI.Desktop.ViewModels.Customers
                 Produce = Orders.Where(x => x.TotalPrice.HasValue).Sum(x => x.TotalPrice.Value),
                 Receive = Payments.Sum(x => x.Amount)
             };
+        }
+
+        public async Task LoadOrdersPage(int page)
+        {
+            if (Customer.Id == default)
+            {
+                return;
+            }
+
+            var paginationResult = await _orderService.GetPaginatedAsync(Customer.Id, (page - 1) * PageSize, PageSize);
+
+            Orders.Clear();
+            foreach (var order in paginationResult.Collection)
+            {
+                Orders.Add(order);
+            }
+
+            CurrentOrderPage = page;
+            NotLastOrderPage = (int)Math.Ceiling((double)paginationResult.TotalCount / PageSize) != page;
+        }
+
+        public async Task LoadPaymentsPage(int page)
+        {
+            if (Customer.Id == default)
+            {
+                return;
+            }
+
+            var paginationResult = await _paymentService.GetPaginatedAsync(Customer.Id, (page - 1) * PageSize, PageSize);
+
+            Payments.Clear();
+            foreach (var payment in paginationResult.Collection)
+            {
+                Payments.Add(payment);
+            }
+
+            CurrentPaymentPage = page;
+            NotLastPaymentPage = (int)Math.Ceiling((double)paginationResult.TotalCount / PageSize) != page;
         }
 
         private void AddProduct()

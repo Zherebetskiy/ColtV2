@@ -25,6 +25,25 @@ namespace Colt.Infrastructure.Repositories
             return true;
         }
 
+        public async Task<PaginationModel<Payment>> GetPaginatedAsync(int customerId, int skip, int take, CancellationToken cancellationToken)
+        {
+            var count = await _dbSet
+                .Where(x => x.CustomerId == customerId)
+                .CountAsync(cancellationToken);
+
+            var result = await _dbSet
+                .Where(x => x.CustomerId == customerId)
+                .Skip(skip)
+                .Take(take)
+                .ToListAsync(cancellationToken);
+
+            return new PaginationModel<Payment>
+            {
+                Collection = result,
+                TotalCount = count
+            };
+        }
+
         public Task<List<Payment>> GetByCustomerIdAsync(int customerId, CancellationToken cancellationToken)
         {
             return _dbSet

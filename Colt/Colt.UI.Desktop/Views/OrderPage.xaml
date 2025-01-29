@@ -29,12 +29,13 @@
             <Label Text="Продукти" FontSize="18" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
             <CollectionView ItemsSource="{Binding Products}" SelectionMode="None" Margin="5">
                 <CollectionView.Header>
-                    <Grid ColumnDefinitions="*,*,*,*,*" Padding="5" Margin="2">
+                    <Grid ColumnDefinitions="*,*,*,*,*,*" Padding="5" Margin="2">
                         <Label Grid.Column="0" Text="Назва" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
-                        <Label Grid.Column="1" Text="Ціна/кг" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
-                        <Label Grid.Column="2" Text="Замовлена вага" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
-                        <Label Grid.Column="3" Text="Поважена вага" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
-                        <Label Grid.Column="4" Text="Загальна ціна" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                        <Label Grid.Column="1" Text="Тип" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                        <Label Grid.Column="2" Text="Ціна/кг" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                        <Label Grid.Column="3" Text="Замовлена вага" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                        <Label Grid.Column="4" Text="Поважена вага" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                        <Label Grid.Column="5" Text="Загальна ціна" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
                     </Grid>
                 </CollectionView.Header>
                 <CollectionView.ItemsLayout>
@@ -43,12 +44,13 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Frame Padding="5" Margin="2" BorderColor="{DynamicResource PrimaryColor}" CornerRadius="10" HasShadow="True">
-                            <Grid ColumnDefinitions="*,*,*,*,*" RowDefinitions="Auto" RowSpacing="2">
+                            <Grid ColumnDefinitions="*,*,*,*,*,*" RowDefinitions="Auto" RowSpacing="2">
                                 <Label Grid.Row="0" Grid.Column="0" Text="{Binding ProductName}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
-                                <Label Grid.Row="0" Grid.Column="1" Text="{Binding ProductPrice}" FontSize="16" TextColor="{DynamicResource SecondaryTextColor}" /> 
-                                <Entry Grid.Row="0" Grid.Column="2" Text="{Binding OrderedWeight, Mode=TwoWay}" FontSize="16" TextColor="{DynamicResource SecondaryTextColor}" Keyboard="Numeric" />
-                                <Entry Grid.Row="0" Grid.Column="3" Text="{Binding ActualWeight, Mode=TwoWay}" FontSize="16" TextColor="{DynamicResource SecondaryTextColor}" Keyboard="Numeric" />
-                                <Label Grid.Row="0" Grid.Column="4" Text="{Binding TotalPrice}" FontSize="16" TextColor="{DynamicResource SecondaryTextColor}" />
+                                <Label Grid.Row="0" Grid.Column="1" Text="{Binding ProductType,Converter={StaticResource MeasurmentToStringConverter}}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
+                                <Label Grid.Row="0" Grid.Column="2" Text="{Binding ProductPrice}" FontSize="16" TextColor="{DynamicResource SecondaryTextColor}" /> 
+                                <Entry Grid.Row="0" Grid.Column="3" Text="{Binding OrderedWeight, Mode=TwoWay}" FontSize="16" TextColor="{DynamicResource SecondaryTextColor}" Keyboard="Numeric" />
+                                <Entry Grid.Row="0" Grid.Column="4" Text="{Binding ActualWeight, Mode=TwoWay}" FontSize="16" TextColor="{DynamicResource SecondaryTextColor}" Keyboard="Numeric" />
+                                <Label Grid.Row="0" Grid.Column="5" Text="{Binding TotalPrice}" FontSize="16" TextColor="{DynamicResource SecondaryTextColor}" />
                             </Grid>
                         </Frame>
                     </DataTemplate>

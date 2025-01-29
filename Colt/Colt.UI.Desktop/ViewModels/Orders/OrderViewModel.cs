@@ -44,17 +44,6 @@ namespace Colt.UI.Desktop.ViewModels.Orders
             }
         }
 
-        //private DateTime? _delivery;
-        //public DateTime? Delivery
-        //{
-        //    get => _delivery;
-        //    set
-        //    {
-        //        _delivery = value;
-        //        OnPropertyChanged();
-        //    }
-        //}
-
         public ObservableCollection<OrderProductViewModel> Products { get; }
 
         public ICommand SaveOrderCommand { get; }
@@ -86,6 +75,7 @@ namespace Colt.UI.Desktop.ViewModels.Orders
                     var productViewModel = new OrderProductViewModel
                     {
                         ProductName = cp.Product.Name,
+                        ProductType = cp.Product.MeasurementType,
                         ProductPrice = cp.Price
                     };
                     Products.Add(productViewModel);
@@ -103,6 +93,7 @@ namespace Colt.UI.Desktop.ViewModels.Orders
                         Id = op.Id,
                         ProductName = op.ProductName,
                         ProductPrice = op.ProductPrice,
+                        ProductType = op.ProductType,
                         ActualWeight = op.ActualWeight,
                         OrderedWeight = op.OrderedWeight,
                         OrderId = op.OrderId
@@ -146,12 +137,13 @@ namespace Colt.UI.Desktop.ViewModels.Orders
                 Id = p.Id,
                 ProductName = p.ProductName,
                 ProductPrice = p.ProductPrice,
+                ProductType = p.ProductType,
                 OrderedWeight = p.OrderedWeight,
                 ActualWeight = p.ActualWeight,
                 TotalPrice = p.TotalPrice
             }).ToList();
 
-            Order.Status = Products.Any(x => x.ActualWeight.HasValue && x.ActualWeight != 0)
+            Order.Status = Order.Status != OrderStatus.Delivered && Products.Any(x => x.ActualWeight.HasValue && x.ActualWeight != 0)
                 ? OrderStatus.Calculated
                 : OrderStatus.Created;
 

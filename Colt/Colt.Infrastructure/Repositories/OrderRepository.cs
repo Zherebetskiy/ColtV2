@@ -17,6 +17,25 @@ namespace Colt.Infrastructure.Repositories
             _dbSet = _dbContext.GetSet<Order>();
         }
 
+        public async Task<PaginationModel<Order>> GetPaginatedAsync(int customerId, int skip, int take, CancellationToken cancellationToken)
+        {
+            var count = await _dbSet
+                .Where(x => x.CustomerId == customerId)
+                .CountAsync(cancellationToken);
+
+            var result = await _dbSet
+                .Where(x => x.CustomerId == customerId)
+                .Skip(skip)
+                .Take(take)
+                .ToListAsync(cancellationToken);
+
+            return new PaginationModel<Order>
+            {
+                Collection = result,
+                TotalCount = count
+            };
+        }
+
         public override Task<Order> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
             return _dbSet
