@@ -160,7 +160,7 @@ namespace Colt.UI.Desktop.ViewModels.Orders
                 TotalPrice = p.TotalPrice
             }).ToList();
 
-            Order.Status = Order.Status != OrderStatus.Delivered && Products.Any(x => x.ActualWeight.HasValue && x.ActualWeight != 0)
+            Order.Status = Products.Any(x => x.ActualWeight.HasValue && x.ActualWeight != 0)
                 ? OrderStatus.Calculated
                 : OrderStatus.Created;
 

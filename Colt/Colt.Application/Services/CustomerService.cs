@@ -25,7 +25,9 @@ namespace Colt.Application.Services
 
         public async Task<List<Customer>> GetAllAsync()
         {
-            return await _customerRepository.GetAsync(CancellationToken.None);
+            return (await _customerRepository.GetAsync(CancellationToken.None))
+                .OrderBy(x => x.Name)
+                .ToList();
         }
 
         public async Task InsertAsync(Customer customer)

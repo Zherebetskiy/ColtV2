@@ -237,7 +237,7 @@ namespace Colt.UI.Desktop.ViewModels.Customers
             }
 
             CurrentOrderPage = page;
-            NotLastOrderPage = (int)Math.Ceiling((double)paginationResult.TotalCount / PageSize) != page;
+            NotLastOrderPage = paginationResult.TotalCount != 0 && (int)Math.Ceiling((double)paginationResult.TotalCount / PageSize) != page;
         }
 
         public async Task LoadPaymentsPage(int page)
@@ -256,7 +256,7 @@ namespace Colt.UI.Desktop.ViewModels.Customers
             }
 
             CurrentPaymentPage = page;
-            NotLastPaymentPage = (int)Math.Ceiling((double)paginationResult.TotalCount / PageSize) != page;
+            NotLastPaymentPage = paginationResult.TotalCount != 0 && (int)Math.Ceiling((double)paginationResult.TotalCount / PageSize) != page;
         }
 
         private void AddProduct()

@@ -11,10 +11,10 @@
         <Tab Title="Домашня" Icon="home.png">
             <ShellContent ContentTemplate="{DataTemplate local:HomePage}" />
         </Tab>
-        <Tab Title="Продукти" Icon="products.png">
+        <Tab Title="Продукти" Icon="iconssausage.png">
             <ShellContent ContentTemplate="{DataTemplate local:ProductsPage}" />
         </Tab>
-        <Tab Title="Оптовики" Icon="products.png">
+        <Tab Title="Оптовики" Icon="iconscustomer.png">
             <ShellContent ContentTemplate="{DataTemplate local:CustomersPage}" />
         </Tab>
     </TabBar>
