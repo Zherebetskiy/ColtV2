@@ -20,28 +20,150 @@
 
             <Grid ColumnDefinitions="Auto,Auto" RowDefinitions="Auto,Auto, Auto" Padding="5" Margin="2">
                 <Label Grid.Row="0" Grid.Column="0" Text="Доставлено замовлень на суму: " FontSize="14" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
-                <Label Grid.Row="0" Grid.Column="1" Text="{Binding Debt.Produce}" FontSize="14" TextColor="{DynamicResource SecondaryTextColor}" />
+                <Label Grid.Row="0" Grid.Column="1" Text="{Binding Debt.Produce, Converter={StaticResource DecimalToStringConverter}}" FontSize="14" TextColor="{DynamicResource SecondaryTextColor}" />
 
                 <Label Grid.Row="1" Grid.Column="0" Text="Оплачено на суму: " FontSize="14" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
-                <Label Grid.Row="1" Grid.Column="1" Text="{Binding Debt.Receive}" FontSize="14" TextColor="{DynamicResource SecondaryTextColor}" />
+                <Label Grid.Row="1" Grid.Column="1" Text="{Binding Debt.Receive, Converter={StaticResource DecimalToStringConverter}}" FontSize="14" TextColor="{DynamicResource SecondaryTextColor}" />
 
                 <Label Grid.Row="2" Grid.Column="0" Text="Борг: " FontSize="14" FontAttributes="Bold" TextColor="Red" />
-                <Label Grid.Row="2" Grid.Column="1" Text="{Binding Debt.Debt}" FontSize="14" TextColor="Red" />
+                <Label Grid.Row="2" Grid.Column="1" Text="{Binding Debt.Debt, Converter={StaticResource DecimalToStringConverter}}" FontSize="14" TextColor="Red" />
             </Grid>
+            <Frame BorderColor="Gray" CornerRadius="8" Padding="0" Margin="5">
+                <toolkit:Expander x:Name="ProductExpander">
+                    <toolkit:Expander.Header>
+                        <StackLayout Orientation="Horizontal" BackgroundColor="CornflowerBlue">
+                            <Image Source="arrow_down.png"
+                                   x:Name="ProductArrowImage"
+                                   VerticalOptions="Center"
+                                   HeightRequest="20" WidthRequest="20"/>
+                            <Label Text="Продукти" FontSize="18" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                        </StackLayout>
+                    </toolkit:Expander.Header>
+                    <toolkit:Expander.Content>
+                        <StackLayout Spacing="10">
+                            <Picker Title="Оберіть продукт"
+                                    Margin="5"
+                                    x:Name="ProductPicker"
+                                    ItemsSource="{Binding Products}"
+                                    ItemDisplayBinding="{Binding Product.Name}"
+                                    SelectedItem="{Binding SelectedProduct}" />
+                            <Button Text="Додати продукт"
+                                    Margin="5"
+                                    Command="{Binding AddProductCommand}"
+                                    BackgroundColor="{DynamicResource PrimaryColor}"
+                                    TextColor="White"
+                                    CornerRadius="10"
+                                    HeightRequest="40"
+                                    WidthRequest="150"
+                                    FontAttributes="Bold"
+                                    HorizontalOptions="Start" />
 
-            <toolkit:Expander>
-                <toolkit:Expander.Header>
-                    <Label Text="Продукти (натисніть щоб розгорнути)" FontSize="18" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
-                </toolkit:Expander.Header>
-                <toolkit:Expander.Content>
-                    <StackLayout Spacing="10">
-                        <Picker Title="Оберіть продукт"
-                                x:Name="ProductPicker"
-                                ItemsSource="{Binding Products}"
-                                ItemDisplayBinding="{Binding Product.Name}"
-                                SelectedItem="{Binding SelectedProduct}" />
-                        <Button Text="Додати продукт"
-                                Command="{Binding AddProductCommand}"
+                            <CollectionView ItemsSource="{Binding SelectedProducts}" SelectionMode="None" Margin="5">
+                                <CollectionView.ItemsLayout>
+                                    <LinearItemsLayout Orientation="Vertical" />
+                                </CollectionView.ItemsLayout>
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Frame Padding="5" Margin="2" BorderColor="{DynamicResource PrimaryColor}" CornerRadius="10" HasShadow="True">
+                                            <Grid ColumnDefinitions="*,*,*,Auto" RowDefinitions="Auto" RowSpacing="2">
+                                                <Label Grid.Row="0" Grid.Column="0" Text="{Binding Product.Name}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
+                                                <Label Grid.Row="0" Grid.Column="1" Text="{Binding Product.MeasurementType, Converter={StaticResource MeasurmentToStringConverter}}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
+                                                <Entry Grid.Row="0" Grid.Column="2" Text="{Binding Price, Mode=TwoWay}" FontSize="16" TextColor="{DynamicResource SecondaryTextColor}">
+                                                    <Entry.Behaviors>
+                                                        <behaviors:DoubleValidationBehavior />
+                                                    </Entry.Behaviors>
+                                                </Entry>
+                                                <ImageButton Grid.Row="0" Grid.Column="3" Source="iconsdelete.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=RemoveProductCommand}" CommandParameter="{Binding .}" CornerRadius="10" />
+                                            </Grid>
+                                        </Frame>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </StackLayout>
+                    </toolkit:Expander.Content>
+                </toolkit:Expander>
+            </Frame>
+
+            <Frame BorderColor="Gray" CornerRadius="8" Padding="0" Margin="5">
+                <toolkit:Expander x:Name="OrderExpander">
+                    <toolkit:Expander.Header>
+                        <StackLayout Orientation="Horizontal" BackgroundColor="CornflowerBlue">
+                            <Image Source="arrow_down.png"
+                                x:Name="OrderArrowImage"
+                                VerticalOptions="Center"
+                                HeightRequest="20" WidthRequest="20"/>
+                            <Label Text="Замовлення" FontSize="18" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                        </StackLayout>
+                    </toolkit:Expander.Header>
+                    <toolkit:Expander.Content>
+                        <StackLayout Spacing="10">
+                            <Button Text="Створити замовлення"
+                                Command="{Binding CreateOrderCommand}"
+                                BackgroundColor="{DynamicResource PrimaryColor}"
+                                Margin="5"
+                                TextColor="White"
+                                CornerRadius="10"
+                                HeightRequest="40"
+                                FontAttributes="Bold"
+                                HorizontalOptions="Start" />
+
+                            <CollectionView ItemsSource="{Binding Orders}" SelectionMode="None" Margin="5">
+                                <CollectionView.ItemsLayout>
+                                    <LinearItemsLayout Orientation="Vertical" />
+                                </CollectionView.ItemsLayout>
+                                <CollectionView.Header>
+                                    <Grid ColumnDefinitions="*,*,*,*,*" Padding="5" Margin="2">
+                                        <Label Grid.Column="0" Text="Створення" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                                        <Label Grid.Column="1" Text="Доаставка" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                                        <Label Grid.Column="2" Text="Статус" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                                        <Label Grid.Column="3" Text="Загальна ціна" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                                    </Grid>
+                                </CollectionView.Header>
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Frame Padding="5" Margin="2" BorderColor="{DynamicResource PrimaryColor}" CornerRadius="10" HasShadow="True">
+                                            <Grid ColumnDefinitions="*,*,*,*,Auto,Auto,Auto,Auto" RowDefinitions="Auto" RowSpacing="2">
+                                                <Label Grid.Row="0" Grid.Column="0" Text="{Binding Date, Converter={StaticResource DateTimeToStringConverter}}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
+                                                <Label Grid.Row="0" Grid.Column="1" Text="{Binding Delivery, Converter={StaticResource DateTimeToStringConverter}}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
+                                                <Label Grid.Row="0" Grid.Column="2" Text="{Binding Status, Converter={StaticResource EnumToStringConverter}}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
+                                                <Label Grid.Row="0" Grid.Column="3" Text="{Binding TotalPrice, Converter={StaticResource DecimalToStringConverter}}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
+                                                <ImageButton Grid.Row="0" Grid.Column="4" Source="iconsdeliver.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=DeliverOrderCommand}" CommandParameter="{Binding .}" BackgroundColor="{DynamicResource PrimaryColor}" CornerRadius="10" />
+                                                <ImageButton Grid.Row="0" Grid.Column="5" Source="iconsprint.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=PrintOrderCommand}" CommandParameter="{Binding .}" BackgroundColor="{DynamicResource PrimaryColor}" CornerRadius="10" />
+                                                <ImageButton Grid.Row="0" Grid.Column="6" Source="editicon.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=EditOrderCommand}" CommandParameter="{Binding .}" BackgroundColor="{DynamicResource PrimaryColor}" CornerRadius="10" />
+                                                <ImageButton Grid.Row="0" Grid.Column="7" Source="iconsdelete.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=DeleteOrderCommand}" CommandParameter="{Binding .}" CornerRadius="10" />
+                                            </Grid>
+                                        </Frame>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                                <CollectionView.Footer>
+                                    <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
+                                        <Button Text="Попередня" Command="{Binding LoadOrdersPageCommand}" Margin="5" CommandParameter="{Binding CurrentOrderPage, Converter={StaticResource DecrementConverter}}" IsEnabled="{Binding CurrentOrderPage, Converter={StaticResource GreaterThanOneConverter}}" />
+                                        <Label Text="{Binding CurrentOrderPage}" VerticalOptions="Center" HorizontalOptions="Center" Margin="5"/>
+                                        <Button Text="Наступна" Command="{Binding LoadOrdersPageCommand}" Margin="5" CommandParameter="{Binding CurrentOrderPage, Converter={StaticResource IncrementConverter}}" IsEnabled="{Binding NotLastOrderPage}" />
+                                    </StackLayout>
+                                </CollectionView.Footer>
+                            </CollectionView>
+                        </StackLayout>
+                    </toolkit:Expander.Content>
+                </toolkit:Expander>
+            </Frame>
+
+            <Frame BorderColor="Gray" CornerRadius="8" Padding="0" Margin="5">
+                <toolkit:Expander x:Name="PaymentExpander">
+                    <toolkit:Expander.Header>
+                        <StackLayout Orientation="Horizontal" BackgroundColor="CornflowerBlue">
+                            <Image Source="arrow_down.png"
+                                    x:Name="PaymentArrowImage"
+                                    VerticalOptions="Center"
+                                    HeightRequest="20" WidthRequest="20"/>
+                            <Label Text="Оплата" FontSize="18" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                        </StackLayout>
+                    </toolkit:Expander.Header>
+                    <toolkit:Expander.Content>
+                        <StackLayout Spacing="10">
+                            <Button Text="Додати оплату"
+                                Margin="5"
+                                Command="{Binding CreatePaymentCommand}"
                                 BackgroundColor="{DynamicResource PrimaryColor}"
                                 TextColor="White"
                                 CornerRadius="10"
@@ -50,134 +172,37 @@
                                 FontAttributes="Bold"
                                 HorizontalOptions="Start" />
 
-                        <CollectionView ItemsSource="{Binding SelectedProducts}" SelectionMode="None" Margin="5">
-                            <CollectionView.ItemsLayout>
-                                <LinearItemsLayout Orientation="Vertical" />
-                            </CollectionView.ItemsLayout>
-                            <CollectionView.ItemTemplate>
-                                <DataTemplate>
-                                    <Frame Padding="5" Margin="2" BorderColor="{DynamicResource PrimaryColor}" CornerRadius="10" HasShadow="True">
-                                        <Grid ColumnDefinitions="*,*,*,Auto" RowDefinitions="Auto" RowSpacing="2">
-                                            <Label Grid.Row="0" Grid.Column="0" Text="{Binding Product.Name}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
-                                            <Label Grid.Row="0" Grid.Column="1" Text="{Binding Product.MeasurementType, Converter={StaticResource MeasurmentToStringConverter}}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
-                                            <Entry Grid.Row="0" Grid.Column="2" Text="{Binding Price, Mode=TwoWay, StringFormat='{}{0:N2}'}" FontSize="16" TextColor="{DynamicResource SecondaryTextColor}" Keyboard="Numeric">
-                                                <Entry.Behaviors>
-                                                    <behaviors:DoubleValidationBehavior />
-                                                </Entry.Behaviors>
-                                            </Entry>
-                                            <ImageButton Grid.Row="0" Grid.Column="3" Source="iconsdelete.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=RemoveProductCommand}" CommandParameter="{Binding .}" CornerRadius="10" />
-                                        </Grid>
-                                    </Frame>
-                                </DataTemplate>
-                            </CollectionView.ItemTemplate>
-                        </CollectionView>
-                    </StackLayout>
-                </toolkit:Expander.Content>
-            </toolkit:Expander>
-
-            <toolkit:Expander IsExpanded="True">
-                <toolkit:Expander.Header>
-                    <Label Text="Замовлення (натисніть щоб розгорнути)" FontSize="18" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
-                </toolkit:Expander.Header>
-                <toolkit:Expander.Content>
-                    <StackLayout Spacing="10">
-                        <Button Text="Створити замовлення"
-                            Command="{Binding CreateOrderCommand}"
-                            BackgroundColor="{DynamicResource PrimaryColor}"
-                            TextColor="White"
-                            CornerRadius="10"
-                            HeightRequest="40"
-                            WidthRequest="150"
-                            FontAttributes="Bold"
-                            HorizontalOptions="Start" />
-
-                        <CollectionView ItemsSource="{Binding Orders}" SelectionMode="None" Margin="5">
-                            <CollectionView.ItemsLayout>
-                                <LinearItemsLayout Orientation="Vertical" />
-                            </CollectionView.ItemsLayout>
-                            <CollectionView.Header>
-                                <Grid ColumnDefinitions="*,*,*,*,*" Padding="5" Margin="2">
-                                    <Label Grid.Column="0" Text="Створення" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
-                                    <Label Grid.Column="1" Text="Доаставка" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
-                                    <Label Grid.Column="2" Text="Статус" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
-                                    <Label Grid.Column="3" Text="Загальна ціна" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
-                                </Grid>
-                            </CollectionView.Header>
-                            <CollectionView.ItemTemplate>
-                                <DataTemplate>
-                                    <Frame Padding="5" Margin="2" BorderColor="{DynamicResource PrimaryColor}" CornerRadius="10" HasShadow="True">
-                                        <Grid ColumnDefinitions="*,*,*,*,Auto,Auto,Auto,Auto" RowDefinitions="Auto" RowSpacing="2">
-                                            <Label Grid.Row="0" Grid.Column="0" Text="{Binding Date, Converter={StaticResource DateTimeToStringConverter}}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
-                                            <Label Grid.Row="0" Grid.Column="1" Text="{Binding Delivery, Converter={StaticResource DateTimeToStringConverter}}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
-                                            <Label Grid.Row="0" Grid.Column="2" Text="{Binding Status, Converter={StaticResource EnumToStringConverter}}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
-                                            <Label Grid.Row="0" Grid.Column="3" Text="{Binding TotalPrice}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
-                                            <ImageButton Grid.Row="0" Grid.Column="4" Source="iconsdeliver.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=DeliverOrderCommand}" CommandParameter="{Binding .}" BackgroundColor="{DynamicResource PrimaryColor}" CornerRadius="10" />
-                                            <ImageButton Grid.Row="0" Grid.Column="5" Source="iconsprint.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=PrintOrderCommand}" CommandParameter="{Binding .}" BackgroundColor="{DynamicResource PrimaryColor}" CornerRadius="10" />
-                                            <ImageButton Grid.Row="0" Grid.Column="6" Source="editicon.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=EditOrderCommand}" CommandParameter="{Binding .}" BackgroundColor="{DynamicResource PrimaryColor}" CornerRadius="10" />
-                                            <ImageButton Grid.Row="0" Grid.Column="7" Source="iconsdelete.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=DeleteOrderCommand}" CommandParameter="{Binding .}" CornerRadius="10" />
-                                        </Grid>
-                                    </Frame>
-                                </DataTemplate>
-                            </CollectionView.ItemTemplate>
-                            <CollectionView.Footer>
-                                <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
-                                    <Button Text="Попередня" Command="{Binding LoadOrdersPageCommand}" CommandParameter="{Binding CurrentOrderPage, Converter={StaticResource DecrementConverter}}" IsEnabled="{Binding CurrentOrderPage, Converter={StaticResource GreaterThanOneConverter}}" />
-                                    <Label Text="{Binding CurrentOrderPage}" VerticalOptions="Center" HorizontalOptions="Center" Margin="10"/>
-                                    <Button Text="Наступна" Command="{Binding LoadOrdersPageCommand}" CommandParameter="{Binding CurrentOrderPage, Converter={StaticResource IncrementConverter}}" IsEnabled="{Binding NotLastOrderPage}" />
-                                </StackLayout>
-                            </CollectionView.Footer>
-                        </CollectionView>
-                    </StackLayout>
-                </toolkit:Expander.Content>
-            </toolkit:Expander>
-
-            <toolkit:Expander>
-                <toolkit:Expander.Header>
-                    <Label Text="Оплата (натисніть щоб розгорнути)" FontSize="18" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
-                </toolkit:Expander.Header>
-                <toolkit:Expander.Content>
-                    <StackLayout Spacing="10">
-                        <Button Text="Додати оплату"
-                            Command="{Binding CreatePaymentCommand}"
-                            BackgroundColor="{DynamicResource PrimaryColor}"
-                            TextColor="White"
-                            CornerRadius="10"
-                            HeightRequest="40"
-                            WidthRequest="150"
-                            FontAttributes="Bold"
-                            HorizontalOptions="Start" />
-
-                        <CollectionView ItemsSource="{Binding Payments}" SelectionMode="None" Margin="5">
-                            <CollectionView.ItemsLayout>
-                                <LinearItemsLayout Orientation="Vertical" />
-                            </CollectionView.ItemsLayout>
-                            <CollectionView.ItemTemplate>
-                                <DataTemplate>
-                                    <Frame Padding="5" Margin="2" BorderColor="{DynamicResource PrimaryColor}" CornerRadius="10" HasShadow="True">
-                                        <Grid ColumnDefinitions="*,*,Auto" RowDefinitions="Auto" RowSpacing="2">
-                                            <DatePicker Grid.Row="0" Grid.Column="0" Date="{Binding Date, Mode=TwoWay}"  MinimumDate="01/01/2024"/>
-                                            <Entry Grid.Row="0" Grid.Column="1"  Text="{Binding Amount, Mode=TwoWay, StringFormat='{}{0:N2}'}" Keyboard="Numeric">
-                                                <Entry.Behaviors>
-                                                    <behaviors:DoubleValidationBehavior />
-                                                </Entry.Behaviors>
-                                            </Entry>
-                                            <ImageButton Grid.Row="0" Grid.Column="2" Source="iconsdelete.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=DeletePaymentCommand}" CommandParameter="{Binding .}" CornerRadius="10" />
-                                        </Grid>
-                                    </Frame>
-                                </DataTemplate>
-                            </CollectionView.ItemTemplate>
-                            <CollectionView.Footer>
-                                <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
-                                    <Button Text="Попередня" Command="{Binding LoadPaymentsPageCommand}" CommandParameter="{Binding CurrentPaymentPage, Converter={StaticResource DecrementConverter}}" IsEnabled="{Binding CurrentPaymentPage, Converter={StaticResource GreaterThanOneConverter}}" />
-                                    <Label Text="{Binding CurrentPaymentPage}" VerticalOptions="Center" HorizontalOptions="Center" Margin="10"/>
-                                    <Button Text="Наступна" Command="{Binding LoadPaymentsPageCommand}" CommandParameter="{Binding CurrentOrderPage, Converter={StaticResource IncrementConverter}}" IsEnabled="{Binding NotLastPaymentPage}" />
-                                </StackLayout>
-                            </CollectionView.Footer>
-                        </CollectionView>
-                    </StackLayout>
-                </toolkit:Expander.Content>
-            </toolkit:Expander>
-
+                            <CollectionView ItemsSource="{Binding Payments}" SelectionMode="None" Margin="5">
+                                <CollectionView.ItemsLayout>
+                                    <LinearItemsLayout Orientation="Vertical" />
+                                </CollectionView.ItemsLayout>
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Frame Padding="5" Margin="2" BorderColor="{DynamicResource PrimaryColor}" CornerRadius="10" HasShadow="True">
+                                            <Grid ColumnDefinitions="*,*,Auto" RowDefinitions="Auto" RowSpacing="2">
+                                                <DatePicker Grid.Row="0" Grid.Column="0" Date="{Binding Date, Mode=TwoWay}"  MinimumDate="01/01/2024"/>
+                                                <Entry Grid.Row="0" Grid.Column="1"  Text="{Binding Amount, Mode=TwoWay}" Keyboard="Numeric">
+                                                    <Entry.Behaviors>
+                                                        <behaviors:DoubleValidationBehavior />
+                                                    </Entry.Behaviors>
+                                                </Entry>
+                                                <ImageButton Grid.Row="0" Grid.Column="2" Source="iconsdelete.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=DeletePaymentCommand}" CommandParameter="{Binding .}" CornerRadius="10" />
+                                            </Grid>
+                                        </Frame>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                                <CollectionView.Footer>
+                                    <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
+                                        <Button Text="Попередня" Margin="5" Command="{Binding LoadPaymentsPageCommand}" CommandParameter="{Binding CurrentPaymentPage, Converter={StaticResource DecrementConverter}}" IsEnabled="{Binding CurrentPaymentPage, Converter={StaticResource GreaterThanOneConverter}}" />
+                                        <Label Text="{Binding CurrentPaymentPage}" VerticalOptions="Center" HorizontalOptions="Center" Margin="5"/>
+                                        <Button Text="Наступна" Margin="5" Command="{Binding LoadPaymentsPageCommand}" CommandParameter="{Binding CurrentOrderPage, Converter={StaticResource IncrementConverter}}" IsEnabled="{Binding NotLastPaymentPage}" />
+                                    </StackLayout>
+                                </CollectionView.Footer>
+                            </CollectionView>
+                        </StackLayout>
+                    </toolkit:Expander.Content>
+                </toolkit:Expander>
+            </Frame>
 
             <Button Text="Зберегти"
                     Command="{Binding SaveCustomerCommand}"

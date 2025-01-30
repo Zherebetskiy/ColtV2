@@ -48,7 +48,7 @@
                             <Grid ColumnDefinitions="*,*,*,*,*,*" RowDefinitions="Auto" RowSpacing="2">
                                 <Label Grid.Row="0" Grid.Column="0" Text="{Binding ProductName}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
                                 <Label Grid.Row="0" Grid.Column="1" Text="{Binding ProductType,Converter={StaticResource MeasurmentToStringConverter}}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
-                                <Label Grid.Row="0" Grid.Column="2" Text="{Binding ProductPrice}" FontSize="16" TextColor="{DynamicResource SecondaryTextColor}" /> 
+                                <Label Grid.Row="0" Grid.Column="2" Text="{Binding ProductPrice, Converter={StaticResource DecimalToStringConverter}}" FontSize="16" TextColor="{DynamicResource SecondaryTextColor}" /> 
                                 <Entry Grid.Row="0" Grid.Column="3" Text="{Binding OrderedWeight, Mode=TwoWay}" FontSize="16" TextColor="{DynamicResource SecondaryTextColor}" Keyboard="Numeric">
                                     <Entry.Behaviors>
                                         <behaviors:DoubleValidationBehavior />
@@ -59,7 +59,7 @@
                                         <behaviors:DoubleValidationBehavior />
                                     </Entry.Behaviors>
                                 </Entry>
-                                <Label Grid.Row="0" Grid.Column="5" Text="{Binding TotalPrice}" FontSize="16" TextColor="{DynamicResource SecondaryTextColor}" />
+                                <Label Grid.Row="0" Grid.Column="5" Text="{Binding TotalPrice, Converter={StaticResource DecimalToStringConverter}}" FontSize="16" TextColor="{DynamicResource SecondaryTextColor}" />
                             </Grid>
                         </Frame>
                     </DataTemplate>
@@ -67,7 +67,7 @@
                 <CollectionView.Footer>
                     <Grid ColumnDefinitions="*,*,*,*,*">
                         <Label Grid.Column="3" Text="Загальна ціна" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
-                        <Label Grid.Column="4" Text="{Binding TotalOrderPrice}" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                        <Label Grid.Column="4" Text="{Binding TotalOrderPrice, Converter={StaticResource DecimalToStringConverter}}" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
                     </Grid>
                 </CollectionView.Footer>
             </CollectionView>

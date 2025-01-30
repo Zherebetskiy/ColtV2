@@ -12,6 +12,24 @@ public partial class ModifyCustomerPage : ContentPage
 	{
 		InitializeComponent();
         BindingContext = new ModifyCustomerViewModel();
+        ProductExpander.HandleHeaderTapped += ProductExpander_Tapped;
+        OrderExpander.HandleHeaderTapped += OrderExpander_Tapped;
+        PaymentExpander.HandleHeaderTapped += PaymentExpander_Tapped;
+    }
+
+    public void ProductExpander_Tapped(TappedEventArgs args)
+    {
+        ProductArrowImage.Rotation = ProductArrowImage.Rotation == 0 ? 180 : 0;
+    }
+
+    public void OrderExpander_Tapped(TappedEventArgs args)
+    {
+        OrderArrowImage.Rotation = OrderArrowImage.Rotation == 0 ? 180 : 0;
+    }
+
+    public void PaymentExpander_Tapped(TappedEventArgs args)
+    {
+        PaymentArrowImage.Rotation = PaymentArrowImage.Rotation == 0 ? 180 : 0;
     }
 
     public Customer Customer
