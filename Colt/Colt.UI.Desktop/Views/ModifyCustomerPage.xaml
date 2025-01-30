@@ -5,6 +5,7 @@
              xmlns:sys="clr-namespace:System;assembly=netstandard"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="Colt.UI.Desktop.Views.ModifyCustomerPage"
+             xmlns:behaviors="clr-namespace:Colt.UI.Desktop.Behaviors"
              BackgroundColor="{DynamicResource PageBackgroundColor}">
 
     <ContentPage.BindingContext>
@@ -59,7 +60,11 @@
                                         <Grid ColumnDefinitions="*,*,*,Auto" RowDefinitions="Auto" RowSpacing="2">
                                             <Label Grid.Row="0" Grid.Column="0" Text="{Binding Product.Name}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
                                             <Label Grid.Row="0" Grid.Column="1" Text="{Binding Product.MeasurementType, Converter={StaticResource MeasurmentToStringConverter}}" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
-                                            <Entry Grid.Row="0" Grid.Column="2" Text="{Binding Price, Mode=TwoWay, StringFormat='{}{0:N2}'}" FontSize="16" TextColor="{DynamicResource SecondaryTextColor}" Keyboard="Numeric" />
+                                            <Entry Grid.Row="0" Grid.Column="2" Text="{Binding Price, Mode=TwoWay, StringFormat='{}{0:N2}'}" FontSize="16" TextColor="{DynamicResource SecondaryTextColor}" Keyboard="Numeric">
+                                                <Entry.Behaviors>
+                                                    <behaviors:DoubleValidationBehavior />
+                                                </Entry.Behaviors>
+                                            </Entry>
                                             <ImageButton Grid.Row="0" Grid.Column="3" Source="iconsdelete.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=RemoveProductCommand}" CommandParameter="{Binding .}" CornerRadius="10" />
                                         </Grid>
                                     </Frame>
@@ -151,7 +156,11 @@
                                     <Frame Padding="5" Margin="2" BorderColor="{DynamicResource PrimaryColor}" CornerRadius="10" HasShadow="True">
                                         <Grid ColumnDefinitions="*,*,Auto" RowDefinitions="Auto" RowSpacing="2">
                                             <DatePicker Grid.Row="0" Grid.Column="0" Date="{Binding Date, Mode=TwoWay}"  MinimumDate="01/01/2024"/>
-                                            <Entry Grid.Row="0" Grid.Column="1"  Text="{Binding Amount, Mode=TwoWay, StringFormat='{}{0:N2}'}" Keyboard="Numeric" />
+                                            <Entry Grid.Row="0" Grid.Column="1"  Text="{Binding Amount, Mode=TwoWay, StringFormat='{}{0:N2}'}" Keyboard="Numeric">
+                                                <Entry.Behaviors>
+                                                    <behaviors:DoubleValidationBehavior />
+                                                </Entry.Behaviors>
+                                            </Entry>
                                             <ImageButton Grid.Row="0" Grid.Column="2" Source="iconsdelete.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ModifyCustomerViewModel}}, Path=DeletePaymentCommand}" CommandParameter="{Binding .}" CornerRadius="10" />
                                         </Grid>
                                     </Frame>
