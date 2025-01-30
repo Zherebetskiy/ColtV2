@@ -12,5 +12,4 @@
     <conv:IncrementConverter x:Key="IncrementConverter" />
     <conv:DoubleToFormattedStringConverter x:Key="DoubleToFormattedStringConverter" />
     <conv:DecimalToStringConverter x:Key="DecimalToStringConverter" />
-    <conv:BooleanToRotationConverter x:Key="BooleanToRotationConverter" />
 </ResourceDictionary>
