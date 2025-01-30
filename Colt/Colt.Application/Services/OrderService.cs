@@ -52,9 +52,19 @@ namespace Colt.Application.Services
 
         public async Task<Order> UpdateAsync(Order order)
         {
-            order.Products = order.Products
-                .Where(x => (x.OrderedWeight.HasValue && x.OrderedWeight != 0) || (x.ActualWeight.HasValue && x.ActualWeight != 0))
-                .ToList();
+            var addedProducts = order.Products.Where(x => x.Id == default).ToList();
+            ////var updatedProducts = order.Products.Where(x => x.Id != default).ToList();
+            var deletedProducts = order.Products.Where(x => x.Id != default && x.OrderedWeight == 0 && x.ActualWeight == 0).ToList();
+
+            await _orderRepository.DeleteProductsAsync(deletedProducts, CancellationToken.None);
+            
+            foreach (var addedProduct in addedProducts)
+            {
+                addedProduct.Order = order;
+                addedProduct.OrderId = order.Id;
+
+                order.Products.Add(addedProduct);
+            }
 
             return await _orderRepository.UpdateAsync(order, CancellationToken.None);
         }

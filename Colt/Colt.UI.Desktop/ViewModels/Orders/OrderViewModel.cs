@@ -58,10 +58,10 @@ namespace Colt.UI.Desktop.ViewModels.Orders
 
         public async Task LoadOrder()
         {
+            var customerProducts = await _customerService.GetProductsAsync(Customer.Id);
+
             if (OrderId == 0)
             {
-                var customerProducts = await _customerService.GetProductsAsync(Customer.Id);
-
                 Order = new Order
                 {
                     CustomerId = Customer.Id,
@@ -97,6 +97,23 @@ namespace Colt.UI.Desktop.ViewModels.Orders
                         ActualWeight = op.ActualWeight,
                         OrderedWeight = op.OrderedWeight,
                         OrderId = op.OrderId
+                    };
+
+                    Products.Add(productViewModel);
+                    productViewModel.TotalPriceChanged += OnProductTotalPriceChanged;
+                }
+
+                var missedProducts = customerProducts
+                    .Where(x => !Products.Any(y => y.ProductName == x.Product.Name))
+                    .ToList();
+
+                foreach (var mp in missedProducts)
+                {
+                    var productViewModel = new OrderProductViewModel
+                    {
+                        ProductName = mp.Product.Name,
+                        ProductType = mp.Product.MeasurementType,
+                        ProductPrice = mp.Price
                     };
 
                     Products.Add(productViewModel);

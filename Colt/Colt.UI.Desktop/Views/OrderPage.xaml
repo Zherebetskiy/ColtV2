@@ -24,7 +24,7 @@
                 <Label Grid.Row="1" Grid.Column="1" Text="{Binding Order.Date, Converter={StaticResource DateTimeToStringConverter}}" FontSize="16" TextColor="{DynamicResource SecondaryTextColor}" />
 
                 <Label Grid.Row="1" Grid.Column="3" Text="Дата доставки" FontSize="16" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
-                <DatePicker Grid.Row="1" Grid.Column="4" Date="{Binding Order.Delivery}" MinimumDate="{x:Static sys:DateTime.Today}" />
+                <DatePicker Grid.Row="1" Grid.Column="4" Date="{Binding Order.Delivery}" MinimumDate="01/01/2024" />
             </Grid>
             
             <Label Text="Продукти" FontSize="18" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
