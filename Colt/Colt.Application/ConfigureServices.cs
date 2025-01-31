@@ -12,6 +12,8 @@ namespace Colt.Application
             services.AddScoped<ICustomerService, CustomerService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IPaymentService, PaymentService>();
+            services.AddScoped<IDocumentService, DocumentService>();
+            services.AddScoped<IInvoiceService, InvoiceService>();
 
             return services;
         }

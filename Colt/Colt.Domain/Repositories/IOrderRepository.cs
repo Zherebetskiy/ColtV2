@@ -9,5 +9,6 @@ namespace Colt.Domain.Repositories
         Task<List<Order>> GetByCustomerIdAsync(int customerId, CancellationToken cancellationToken);
         Task<Order> GetByIdWithCustomerAsync(int id, CancellationToken cancellationToken);
         Task<PaginationModel<Order>> GetPaginatedAsync(int customerId, int skip, int take, CancellationToken cancellationToken);
+        Task<List<OrderProduct>> GetProductsAsync(int orderId, CancellationToken cancellationToken);
     }
 }

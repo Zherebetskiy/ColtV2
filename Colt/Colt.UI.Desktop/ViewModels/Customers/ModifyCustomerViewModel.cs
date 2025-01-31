@@ -15,6 +15,7 @@ namespace Colt.UI.Desktop.ViewModels.Customers
         private readonly IProductService _productService;
         private readonly IOrderService _orderService;
         private readonly IPaymentService _paymentService;
+        private readonly IInvoiceService _invoiceService;
 
         public ObservableCollection<Order> Orders { get; }
         public ObservableCollection<Payment> Payments { get; }
@@ -122,6 +123,7 @@ namespace Colt.UI.Desktop.ViewModels.Customers
             _productService = ServiceHelper.GetService<IProductService>();
             _orderService = ServiceHelper.GetService<IOrderService>();
             _paymentService = ServiceHelper.GetService<IPaymentService>();
+            _invoiceService = ServiceHelper.GetService<IInvoiceService>();
             SaveCustomerCommand = new Command(async () => await SaveCustomer());
             AddProductCommand = new Command(AddProduct);
             RemoveProductCommand = new Command<CustomerProduct>(async (product) => await RemoveProductAsync(product));
@@ -208,7 +210,16 @@ namespace Colt.UI.Desktop.ViewModels.Customers
                 return;
             }
 
-            var orders = await _orderService.GetByCustomerIdAsync(Customer.Id);
+            try
+            {
+                var outputPath = await _invoiceService.GenerateInvoiceAsync(Customer, order, Debt);
+
+                await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", $"Накладна збережена в папці {outputPath}", "OK");
+            }
+            catch (Exception ex)
+            {
+                await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", $"Помилка під час створення накладної: {ex.Message}", "OK");
+            }
         }
 
         public async Task CalculateDebt()

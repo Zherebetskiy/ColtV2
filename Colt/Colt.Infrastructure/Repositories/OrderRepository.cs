@@ -74,6 +74,15 @@ namespace Colt.Infrastructure.Repositories
                 .ToListAsync(cancellationToken);
         }
 
+        public Task<List<OrderProduct>> GetProductsAsync(int orderId, CancellationToken cancellationToken)
+        {
+            return _dbContext.GetSet<OrderProduct>()
+                .Where(x => x.OrderId == orderId)
+                .OrderBy(x => x.ProductName)
+                .AsNoTracking()
+                .ToListAsync(cancellationToken);
+        }
+
         public async Task<bool> DeleteProductsAsync(List<OrderProduct> products, CancellationToken cancellationToken)
         {
             _dbContext.GetSet<OrderProduct>().RemoveRange(products);
