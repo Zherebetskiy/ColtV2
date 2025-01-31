@@ -2,6 +2,6 @@
 {
     public interface IDocumentService
     {
-        void ProcessFile<T>(T model, string inputPath, string outputPath) where T : class;
+        void ProcessFile<T>(T model, Stream fileStram, string outputPath) where T : class;
     }
 }

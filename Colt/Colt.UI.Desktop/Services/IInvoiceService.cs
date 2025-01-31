@@ -1,7 +1,7 @@
 ﻿using Colt.Domain.Common;
 using Colt.Domain.Entities;
 
-namespace Colt.Application.Interfaces
+namespace Colt.UI.Desktop
 {
     public interface IInvoiceService
     {

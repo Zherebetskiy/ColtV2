@@ -32,7 +32,7 @@ namespace Colt.UI.Desktop
 
             builder.Services.AddApplicationServices();
             builder.Services.AddInfrastructureServices(config);
-
+            builder.Services.AddScoped<IInvoiceService, InvoiceService>();
             builder.Services.AddTransient<AddProductViewModel>();
 
             #if DEBUG

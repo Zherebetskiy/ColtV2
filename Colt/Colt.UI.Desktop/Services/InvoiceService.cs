@@ -3,9 +3,8 @@ using Colt.Domain.Common;
 using Colt.Domain.Entities;
 using Colt.Domain.Enums;
 using Colt.Domain.Repositories;
-using System.Reflection;
 
-namespace Colt.Application.Services
+namespace Colt.UI.Desktop
 {
     public class InvoiceService : IInvoiceService
     {
@@ -26,11 +25,12 @@ namespace Colt.Application.Services
 
             var model = GetInvoiceModel(customer, order, debt, orderProducts);
 
-            var inputPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Resources", "InvoiceTemplate.docx");
-            var docName = $"{customer.Name} - {order.Id}.docx";
-            var outputPath = $"C:\\Users\\zhere\\OneDrive\\Робочий стіл\\Invoices\\{order.Delivery:dd.MMM yyyy}\\{docName}";
+            using var templateStream = await FileSystem.OpenAppPackageFileAsync("CustomerInvoiceTemplate.docx");
 
-            _documentService.ProcessFile(model, inputPath, outputPath);
+            var docName = $"{order.Date:dd.MMM yyyy} - {customer.Name} - {order.Id}.docx";
+            var outputPath = Path.Combine(FileSystem.CacheDirectory, docName);
+
+            _documentService.ProcessFile(model, templateStream, outputPath);
 
             return outputPath;
         }

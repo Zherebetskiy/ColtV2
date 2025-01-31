@@ -6,10 +6,10 @@ namespace Colt.Application.Services
 {
     public class DocumentService : IDocumentService
     {
-        public void ProcessFile<T>(T model, string inputPath, string outputPath) where T : class
+        public void ProcessFile<T>(T model, Stream fileStram, string outputPath) where T : class
         {
             var doc = new GcWordDocument();
-            doc.Load(inputPath);
+            doc.Load(fileStram);
 
             doc.DataTemplate.DataSources.Add("ds", model);
 
