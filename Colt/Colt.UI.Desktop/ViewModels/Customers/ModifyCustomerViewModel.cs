@@ -200,8 +200,6 @@ namespace Colt.UI.Desktop.ViewModels.Customers
             }
 
             await LoadOrdersPage(CurrentOrderPage);
-            OnPropertyChanged(nameof(Orders));
-
             await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", "Замовлення доставлено!", "OK");
         }
 
@@ -243,11 +241,31 @@ namespace Colt.UI.Desktop.ViewModels.Customers
 
             var paginationResult = await _orderService.GetPaginatedAsync(Customer.Id, (page - 1) * PageSize, PageSize);
 
-            Orders.Clear();
-            foreach (var order in paginationResult.Collection)
+            // Update existing collection instead of clearing it
+            for (int i = 0; i < paginationResult.Collection.Count; i++)
             {
-                Orders.Add(order);
+                if (i < Orders.Count)
+                {
+                    Orders[i] = paginationResult.Collection[i]; // Update existing items
+                }
+                else
+                {
+                    Orders.Add(paginationResult.Collection[i]); // Add new items
+                }
             }
+
+            // Remove extra items if necessary
+            while (Orders.Count > paginationResult.Collection.Count)
+            {
+                Orders.RemoveAt(Orders.Count - 1);
+            }
+
+            //in case previous solution doesn't work, you can clear the collection and add new items
+            //Orders.Clear();
+            //foreach (var order in paginationResult.Collection)
+            //{
+            //    Orders.Add(order);
+            //}
 
             CurrentOrderPage = page;
             NotLastOrderPage = paginationResult.TotalCount != 0 && (int)Math.Ceiling((double)paginationResult.TotalCount / PageSize) != page;
