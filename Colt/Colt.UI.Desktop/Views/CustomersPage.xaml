@@ -8,9 +8,9 @@
     <ContentPage.BindingContext>
         <vm:CustomersViewModel />
     </ContentPage.BindingContext>
-
-    <Grid Padding="20" RowDefinitions="Auto,Auto,Auto,*">
-        <Button Grid.Row="0"
+    <ScrollView>
+        <Grid Padding="20" RowDefinitions="Auto,Auto,Auto,*">
+            <Button Grid.Row="0"
                 Text="Додати оптовика"
                 Command="{Binding NavigateToAddCustomerCommand}"
                 BackgroundColor="{DynamicResource PrimaryColor}"
@@ -20,33 +20,34 @@
                 FontAttributes="Bold"
                 HorizontalOptions="FillAndExpand" />
 
-        <!-- Column Headings -->
-        <Grid Grid.Row="1" ColumnDefinitions="*,*,*,Auto,Auto" Padding="10" Margin="5">
-            <Label Grid.Column="0" Text="Ім'я" FontSize="24" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
-            <Label Grid.Column="1" Text="Телефон" FontSize="24" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
-            <Label Grid.Column="2" Text="Нотатки" FontSize="24" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
-        </Grid>
+            <!-- Column Headings -->
+            <Grid Grid.Row="1" ColumnDefinitions="*,*,*,Auto,Auto" Padding="10" Margin="5">
+                <Label Grid.Column="0" Text="Ім'я" FontSize="24" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                <Label Grid.Column="1" Text="Телефон" FontSize="24" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                <Label Grid.Column="2" Text="Нотатки" FontSize="24" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+            </Grid>
 
-        <CollectionView Grid.Row="2"
+            <CollectionView Grid.Row="2"
                         ItemsSource="{Binding Customers}"
                         SelectionMode="None"
                         Margin="5">
-            <CollectionView.ItemsLayout>
-                <LinearItemsLayout Orientation="Vertical" />
-            </CollectionView.ItemsLayout>
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Frame Padding="10" Margin="5" BorderColor="{DynamicResource PrimaryColor}" CornerRadius="10" HasShadow="True">
-                        <Grid ColumnDefinitions="*,*,*,Auto,Auto" RowDefinitions="Auto" RowSpacing="5">
-                            <Label Grid.Row="0" Grid.Column="0" Text="{Binding Name}" FontSize="24" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
-                            <Label Grid.Row="0" Grid.Column="1" Text="{Binding PhoneNumber}" FontSize="18" TextColor="{DynamicResource SecondaryTextColor}" />
-                            <Label Grid.Row="0" Grid.Column="2" Text="{Binding Notes}" FontSize="18" TextColor="{DynamicResource SecondaryTextColor}" />
-                            <ImageButton Grid.Row="0" Grid.Column="3" Source="editicon.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CustomersViewModel}}, Path=EditCustomerCommand}" CommandParameter="{Binding .}" BackgroundColor="{DynamicResource PrimaryColor}" CornerRadius="10" />
-                            <ImageButton Grid.Row="0" Grid.Column="4" Source="iconsdelete.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CustomersViewModel}}, Path=DeleteCustomerCommand}" CommandParameter="{Binding .}" CornerRadius="10" />
-                        </Grid>
-                    </Frame>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-    </Grid>
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Padding="10" Margin="5" BorderColor="{DynamicResource PrimaryColor}" CornerRadius="10" HasShadow="True">
+                            <Grid ColumnDefinitions="*,*,*,Auto,Auto" RowDefinitions="Auto" RowSpacing="5">
+                                <Label Grid.Row="0" Grid.Column="0" Text="{Binding Name}" FontSize="24" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                                <Label Grid.Row="0" Grid.Column="1" Text="{Binding PhoneNumber}" FontSize="18" TextColor="{DynamicResource SecondaryTextColor}" />
+                                <Label Grid.Row="0" Grid.Column="2" Text="{Binding Notes}" FontSize="18" TextColor="{DynamicResource SecondaryTextColor}" />
+                                <ImageButton Grid.Row="0" Grid.Column="3" Source="editicon.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CustomersViewModel}}, Path=EditCustomerCommand}" CommandParameter="{Binding .}" BackgroundColor="{DynamicResource PrimaryColor}" CornerRadius="10" />
+                                <ImageButton Grid.Row="0" Grid.Column="4" Source="iconsdelete.png" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CustomersViewModel}}, Path=DeleteCustomerCommand}" CommandParameter="{Binding .}" CornerRadius="10" />
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+    </ScrollView>
 </ContentPage>

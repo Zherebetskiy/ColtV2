@@ -17,6 +17,28 @@ namespace Colt.Infrastructure.Repositories
             _dbSet = _dbContext.GetSet<Order>();
         }
 
+        public Task<List<OrderProduct>> GetStatisticsAsync(int? customerId, string productName, DateTime from, DateTime to, CancellationToken cancellationToken)
+        {
+            var query = _dbContext.GetSet<OrderProduct>()
+                .Include(x => x.Order)
+                .Where(x => x.Order.Delivery >= from && x.Order.Delivery <= to && x.Order.Status == Domain.Enums.OrderStatus.Delivered);
+
+            if (customerId.HasValue)
+            {
+                query = query.Where(x => x.Order.CustomerId == customerId);
+            }
+
+            if (!string.IsNullOrWhiteSpace(productName))
+            {
+                query = query.Where(x => x.ProductName == productName);
+            }
+
+            return query
+                .OrderBy(x => x.ProductName)
+                .AsNoTracking()
+                .ToListAsync(cancellationToken);
+        }
+
         public async Task<PaginationModel<Order>> GetPaginatedAsync(int customerId, int skip, int take, CancellationToken cancellationToken)
         {
             var count = await _dbSet

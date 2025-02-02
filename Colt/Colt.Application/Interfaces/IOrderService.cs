@@ -13,5 +13,6 @@ namespace Colt.Application.Interfaces
         Task<Order> UpdateAsync(Order order);
         Task<Order> DeliverAsync(Order order);
         Task<bool> DeleteAsync(int id);
+        Task<List<OrderProduct>> GetStatisticsAsync(int? customerId, string productName, DateTime from, DateTime to);
     }
 }

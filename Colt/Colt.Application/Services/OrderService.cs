@@ -24,6 +24,11 @@ namespace Colt.Application.Services
             return await _orderRepository.GetAsync(CancellationToken.None);
         }
 
+        public Task<List<OrderProduct>> GetStatisticsAsync(int? customerId, string productName, DateTime from, DateTime to)
+        {
+            return _orderRepository.GetStatisticsAsync(customerId, productName, from, to, CancellationToken.None);
+        }
+
         public async Task<PaginationModel<Order>> GetPaginatedAsync(int customerId, int skip, int take)
         {
             return await _orderRepository.GetPaginatedAsync(customerId, skip, take, CancellationToken.None);
@@ -53,7 +58,6 @@ namespace Colt.Application.Services
         public async Task<Order> UpdateAsync(Order order)
         {
             var addedProducts = order.Products.Where(x => x.Id == default).ToList();
-            ////var updatedProducts = order.Products.Where(x => x.Id != default).ToList();
             var deletedProducts = order.Products.Where(x => x.Id != default && x.OrderedWeight == 0 && x.ActualWeight == 0).ToList();
 
             await _orderRepository.DeleteProductsAsync(deletedProducts, CancellationToken.None);

@@ -3,6 +3,7 @@ using Colt.Domain.Entities;
 using Colt.Domain.Repositories;
 using Colt.Infrastructure.Persistance;
 using Microsoft.EntityFrameworkCore;
+using System.Threading;
 
 namespace Colt.Infrastructure.Repositories
 {
@@ -50,6 +51,24 @@ namespace Colt.Infrastructure.Repositories
             return _dbSet
                 .Where(x => x.CustomerId == customerId)
                 .OrderByDescending(x => x.Date)
+                .AsNoTracking()
+                .ToListAsync(cancellationToken);
+        }
+
+        public Task<List<Payment>> GetStatisticsAsync(DateTime from, DateTime to, CancellationToken cancellationToken)
+        {
+            return _dbSet
+                .Where(x => x.Date >= from && x.Date <= to)
+                .OrderBy(x => x.Date)
+                .AsNoTracking()
+                .ToListAsync(cancellationToken);
+        }
+
+        public Task<List<Payment>> GetCustomerStatisticsAsync(int customerId, DateTime from, DateTime to, CancellationToken cancellationToken)
+        {
+            return _dbSet
+                .Where(x => x.CustomerId == customerId && x.Date >= from && x.Date <= to)
+                .OrderBy(x => x.Date)
                 .AsNoTracking()
                 .ToListAsync(cancellationToken);
         }

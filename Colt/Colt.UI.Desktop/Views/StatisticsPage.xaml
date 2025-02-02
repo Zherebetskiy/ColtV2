@@ -12,14 +12,55 @@
 
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="20">
-            <Label Text="Борги замовників" FontSize="24" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+            <Label Text="Борги замовників" FontSize="20" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+            <HorizontalStackLayout Spacing="20">
+                <Label Text="Загальний борг:" FontSize="14" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                <Label Text="{Binding TotalDebt}" FontSize="14" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+            </HorizontalStackLayout>
             <microcharts:ChartView x:Name="CustomerDebtChart" HeightRequest="400" />
 
-            <Label Text="Прибуток" FontSize="24" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
-            <microcharts:ChartView x:Name="CustomerDebtChart" HeightRequest="400" />
-
-            <Label Text="Товари" FontSize="24" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
-            <microcharts:ChartView x:Name="CustomerDebtChart" HeightRequest="400" />
+            <Label Text="Прибуток" FontSize="20" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+            <HorizontalStackLayout Spacing="20">
+                <Picker MaximumWidthRequest="400" ItemsSource="{Binding Customers}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SelectedCustomer}" />
+                <DatePicker Date="{Binding StartDate}" MinimumDate="01/01/2020"/>
+                <DatePicker Date="{Binding EndDate}" MinimumDate="01/01/2020"/>
+                <Button Text="Завантажити"
+                    Clicked="OnLoadIncomeChartClicked"
+                    BackgroundColor="{DynamicResource PrimaryColor}"
+                    TextColor="White"
+                    CornerRadius="10"
+                    HeightRequest="40"
+                    WidthRequest="150"
+                    FontAttributes="Bold"
+                    HorizontalOptions="Start" />
+            </HorizontalStackLayout>
+            <HorizontalStackLayout Spacing="20">
+                <Label Text="Загальний прибуток:" FontSize="14" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                <Label Text="{Binding TotalIncome}" FontSize="14" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+            </HorizontalStackLayout>
+            <microcharts:ChartView x:Name="IncomeChart" HeightRequest="400" />
+            
+            <Label Text="Товари" FontSize="20" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+            <HorizontalStackLayout Spacing="20">
+                <Picker MaximumWidthRequest="400" ItemsSource="{Binding Customers}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SelectedProductCustomer}" />
+                <Picker MaximumWidthRequest="400" ItemsSource="{Binding Products}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SelectedProduct}" />
+                <DatePicker Date="{Binding ProductStartDate}" MinimumDate="01/01/2020"/>
+                <DatePicker Date="{Binding ProductEndDate}" MinimumDate="01/01/2020"/>
+                <Button Text="Завантажити"
+                    Clicked="OnLoadProductChartClicked"
+                    BackgroundColor="{DynamicResource PrimaryColor}"
+                    TextColor="White"
+                    CornerRadius="10"
+                    HeightRequest="40"
+                    WidthRequest="150"
+                    FontAttributes="Bold"
+                    HorizontalOptions="Start" />
+            </HorizontalStackLayout>
+            <HorizontalStackLayout Spacing="20">
+                <Label Text="Загальна вага:" FontSize="14" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+                <Label Text="{Binding TotalProductWeight}" FontSize="14" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+            </HorizontalStackLayout>
+            <microcharts:ChartView x:Name="ProductsChart" HeightRequest="400" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
