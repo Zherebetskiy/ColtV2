@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Colt.UI.Desktop.ViewModels.Statistics"
+             xmlns:microcharts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
+             x:Class="Colt.UI.Desktop.Views.StatisticsPage"
+             BackgroundColor="{DynamicResource PageBackgroundColor}">
+
+    <ContentPage.BindingContext>
+        <vm:StatisticsViewModel />
+    </ContentPage.BindingContext>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+            <Label Text="Борги замовників" FontSize="24" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+            <microcharts:ChartView x:Name="CustomerDebtChart" HeightRequest="400" />
+
+            <Label Text="Прибуток" FontSize="24" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+            <microcharts:ChartView x:Name="CustomerDebtChart" HeightRequest="400" />
+
+            <Label Text="Товари" FontSize="24" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}" />
+            <microcharts:ChartView x:Name="CustomerDebtChart" HeightRequest="400" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

@@ -8,7 +8,7 @@ namespace Colt.UI.Desktop
         {
             InitializeComponent();
 
-            Routing.RegisterRoute(nameof(HomePage), typeof(HomePage));
+            Routing.RegisterRoute(nameof(StatisticsPage), typeof(StatisticsPage));
             Routing.RegisterRoute(nameof(ProductsPage), typeof(ProductsPage));
             Routing.RegisterRoute(nameof(AddProductPage), typeof(AddProductPage));
             Routing.RegisterRoute(nameof(CustomersPage), typeof(CustomersPage));

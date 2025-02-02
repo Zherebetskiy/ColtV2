@@ -3,6 +3,7 @@ using Colt.Infrastructure;
 using Colt.UI.Desktop.Helpers;
 using Colt.UI.Desktop.ViewModels.Products;
 using CommunityToolkit.Maui;
+using Microcharts.Maui;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
@@ -17,6 +18,7 @@ namespace Colt.UI.Desktop
             builder
                 .UseMauiApp<App>()
                 .UseMauiCommunityToolkit()
+                .UseMicrocharts()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
