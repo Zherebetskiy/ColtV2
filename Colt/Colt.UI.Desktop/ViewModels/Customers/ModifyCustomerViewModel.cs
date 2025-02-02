@@ -314,7 +314,14 @@ namespace Colt.UI.Desktop.ViewModels.Customers
         {
             if (string.IsNullOrWhiteSpace(Customer.Name) || string.IsNullOrWhiteSpace(Customer.PhoneNumber))
             {
-                await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", "Назва і телефон обов'язкові!", "OK");
+                await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", "Ім'я і телефон обов'язкові!", "OK");
+                return;
+            }
+
+            var invalidProducts = SelectedProducts.Where(x => x.Price <= 0).ToList();
+            if (invalidProducts.Any())
+            {
+                await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", $"Ціна продуктів: {string.Join(',', invalidProducts.Select(x => x.Product.Name))} не може бути менша або рівна 0. Клієнт не збережено!", "OK");
                 return;
             }
 
