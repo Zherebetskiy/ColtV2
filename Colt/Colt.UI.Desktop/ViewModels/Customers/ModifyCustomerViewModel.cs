@@ -200,6 +200,8 @@ namespace Colt.UI.Desktop.ViewModels.Customers
             }
 
             await LoadOrdersPage(CurrentOrderPage);
+            OnPropertyChanged(nameof(Orders));
+
             await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", "Замовлення доставлено!", "OK");
         }
 
@@ -214,7 +216,7 @@ namespace Colt.UI.Desktop.ViewModels.Customers
             {
                 var outputPath = await _invoiceService.GenerateInvoiceAsync(Customer, order, Debt);
 
-                await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", $"Накладна збережена в папці {outputPath}", "OK");
+                await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", $"Накладна збережена в папці: {outputPath}", "OK");
             }
             catch (Exception ex)
             {
