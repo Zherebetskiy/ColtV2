@@ -1,6 +1,7 @@
 ﻿using Colt.Application.Interfaces;
 using Colt.Domain.Entities;
 using Colt.UI.Desktop.Helpers;
+using Serilog;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -149,121 +150,159 @@ namespace Colt.UI.Desktop.ViewModels.Statistics
 
         public async Task LoadProducts()
         {
-            var products = await _productService.GetAllAsync();
-            Products.Clear();
-
-            foreach (var product in products)
+            try
             {
-                Products.Add(product);
-            }
+                var products = await _productService.GetAllAsync();
+                Products.Clear();
 
-            if (Products.Any())
+                foreach (var product in products)
+                {
+                    Products.Add(product);
+                }
+
+                if (Products.Any())
+                {
+                    SelectedProduct = Products.First();
+                }
+            }
+            catch (Exception ex)
             {
-                SelectedProduct = Products.First();
+                Log.Error(ex, "Failed to load products");
+                //await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", $"Виникла критична поилка, звяжіться з розробником!!!\n Помилка: {ex.Message}", "OK");
             }
-
         }
 
         public async Task LoadCustomers()
         {
-            var customers = await _customerService.GetAllAsync();
-            Customers.Clear();
-
-            Customers.Add(new Customer
+            try
             {
-                Name = "Всі замовники"
-            });
+                var customers = await _customerService.GetAllAsync();
+                Customers.Clear();
 
-            foreach (var customer in customers)
-            {
-                Customers.Add(customer);
+                Customers.Add(new Customer
+                {
+                    Name = "Всі замовники"
+                });
+
+                foreach (var customer in customers)
+                {
+                    Customers.Add(customer);
+                }
+
+                if (Customers.Any())
+                {
+                    SelectedCustomer = Customers.First();
+                    SelectedProductCustomer = Customers.First();
+                }
             }
-
-            if (Customers.Any())
+            catch (Exception ex)
             {
-                SelectedCustomer = Customers.First();
-                SelectedProductCustomer = Customers.First();
+                Log.Error(ex, "Failed to load customers");
+                //await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", $"Виникла критична поилка, звяжіться з розробником!!!\n Помилка: {ex.Message}", "OK");
             }
-
         }
 
         public async Task LoadCustomerDebts()
         {
-            var customerDebts = new List<CustomerDebtChartEntry>();
-
-            foreach (var customer in Customers)
+            try
             {
-                var debt = await _customerService.GetDebtAsync(customer.Id);
-                customerDebts.Add(new CustomerDebtChartEntry
+                var customerDebts = new List<CustomerDebtChartEntry>();
+
+                foreach (var customer in Customers)
                 {
-                    CustomerName = customer.Name,
-                    DebtAmount = debt.Debt
-                });
-            }
+                    var debt = await _customerService.GetDebtAsync(customer.Id);
+                    customerDebts.Add(new CustomerDebtChartEntry
+                    {
+                        CustomerName = customer.Name,
+                        DebtAmount = debt.Debt
+                    });
+                }
 
-            CustomerDebtChartEntries.Clear();
-            foreach (var entry in customerDebts)
+                CustomerDebtChartEntries.Clear();
+                foreach (var entry in customerDebts)
+                {
+                    CustomerDebtChartEntries.Add(entry);
+                }
+
+                TotalDebt = customerDebts.Sum(x => x.DebtAmount);
+            }
+            catch (Exception ex)
             {
-                CustomerDebtChartEntries.Add(entry);
+                Log.Error(ex, "Failed to load customer debts");
+                //await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", $"Виникла критична поилка, звяжіться з розробником!!!\n Помилка: {ex.Message}", "OK");
             }
-
-            TotalDebt = customerDebts.Sum(x => x.DebtAmount);
         }
 
         public async Task LoadIncomeChart()
         {
-            if (StartDate == default)
+            try
             {
-                StartDate = DateTime.Now.AddMonths(-1);
-            }
-
-            if (EndDate == default)
-            {
-                StartDate = DateTime.Now;
-            }
-
-            var customerId = SelectedCustomer?.Id == 0 ? null : SelectedCustomer?.Id;
-            var payments = await _paymentService.GetStatisticsAsync(customerId, StartDate, EndDate);
-
-            IncomeChartEntries.Clear();
-            foreach (var payment in payments)
-            {
-                IncomeChartEntries.Add(new IncomeChartEntry
+                if (StartDate == default)
                 {
-                    Date = payment.Date.ToString("dd-MMM-yyyy"),
-                    Amount = payment.Amount
-                });
-            }
+                    StartDate = DateTime.Now.AddMonths(-1);
+                }
 
-            TotalIncome = payments.Sum(x => x.Amount);
+                if (EndDate == default)
+                {
+                    StartDate = DateTime.Now;
+                }
+
+                var customerId = SelectedCustomer?.Id == 0 ? null : SelectedCustomer?.Id;
+                var payments = await _paymentService.GetStatisticsAsync(customerId, StartDate, EndDate);
+
+                IncomeChartEntries.Clear();
+                foreach (var payment in payments)
+                {
+                    IncomeChartEntries.Add(new IncomeChartEntry
+                    {
+                        Date = payment.Date.ToString("dd-MMM-yyyy"),
+                        Amount = payment.Amount
+                    });
+                }
+
+                TotalIncome = payments.Sum(x => x.Amount);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to load incomes");
+                //await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", $"Виникла критична поилка, звяжіться з розробником!!!\n Помилка: {ex.Message}", "OK");
+            }
         }
 
         public async Task LoadProductsChart()
         {
-            if (ProductStartDate == default)
+            try
             {
-                ProductStartDate = DateTime.Now.AddMonths(-1);
-            }
-
-            if (ProductEndDate == default)
-            {
-                ProductStartDate = DateTime.Now;
-            }
-
-            var customerId = SelectedProductCustomer?.Id == 0 ? null : SelectedProductCustomer?.Id;
-            var products = await _orderService.GetStatisticsAsync(customerId, SelectedProduct?.Name, ProductStartDate, ProductEndDate);
-
-            ProductsChartEntries.Clear();
-            foreach (var product in products)
-            {
-                ProductsChartEntries.Add(new ProductChartEntry
+                if (ProductStartDate == default)
                 {
-                    Date = product.Order.Delivery.ToString("dd-MMM-yyyy"),
-                    Amount = product.ActualWeight ?? 0.0
-                });
-            }
+                    ProductStartDate = DateTime.Now.AddMonths(-1);
+                }
 
-            TotalProductWeight = products.Sum(x => x.ActualWeight ?? 0.0);
+                if (ProductEndDate == default)
+                {
+                    ProductStartDate = DateTime.Now;
+                }
+
+                var customerId = SelectedProductCustomer?.Id == 0 ? null : SelectedProductCustomer?.Id;
+                var products = await _orderService.GetStatisticsAsync(customerId, SelectedProduct?.Name, ProductStartDate, ProductEndDate);
+
+                ProductsChartEntries.Clear();
+                foreach (var product in products)
+                {
+                    ProductsChartEntries.Add(new ProductChartEntry
+                    {
+                        Date = product.Order.Delivery.ToString("dd-MMM-yyyy"),
+                        Amount = product.ActualWeight ?? 0.0
+                    });
+                }
+
+                TotalProductWeight = products.Sum(x => x.ActualWeight ?? 0.0);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to load products");
+                //await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", $"Виникла критична поилка, звяжіться з розробником!!!\n Помилка: {ex.Message}", "OK");
+            }
         }
     }
 

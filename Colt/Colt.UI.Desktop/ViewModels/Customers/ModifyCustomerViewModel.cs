@@ -4,6 +4,7 @@ using Colt.Domain.Entities;
 using Colt.Domain.Enums;
 using Colt.UI.Desktop.Helpers;
 using Colt.UI.Desktop.Views;
+using Serilog;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -146,148 +147,190 @@ namespace Colt.UI.Desktop.ViewModels.Customers
 
         public async Task LoadProducts()
         {
-            var products = await _productService.GetAllAsync();
-
-            Products.Clear();
-            foreach (var product in products)
+            try
             {
-                Products.Add(new CustomerProduct
+                var products = await _productService.GetAllAsync();
+
+                Products.Clear();
+                foreach (var product in products)
                 {
-                    Product = product,
-                    ProductId = product.Id,
-                    CustomerId = Customer.Id
-                });
-            }
+                    Products.Add(new CustomerProduct
+                    {
+                        Product = product,
+                        ProductId = product.Id,
+                        CustomerId = Customer.Id
+                    });
+                }
 
-            if (Customer.Id == default)
-            {
-                return;
-            }
+                if (Customer.Id == default)
+                {
+                    return;
+                }
 
-            var customerProducts = await _customerService.GetProductsAsync(Customer.Id);
-            
-            SelectedProducts.Clear();
-            foreach (var customerProduct in customerProducts)
+                var customerProducts = await _customerService.GetProductsAsync(Customer.Id);
+
+                SelectedProducts.Clear();
+                foreach (var customerProduct in customerProducts)
+                {
+                    SelectedProducts.Add(customerProduct);
+                }
+            }
+            catch (Exception ex)
             {
-                SelectedProducts.Add(customerProduct);
+                Log.Error(ex, "Failed to load products");   
+                //await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", $"Виникла критична поилка, звяжіться з розробником!!!\n Помилка: {ex.Message}", "OK");
             }
         }
 
         public async Task DeliverOrder(Order order)
         {
-            if (Customer.Id == default)
+            try
             {
-                return;
-            }
+                if (Customer.Id == default)
+                {
+                    return;
+                }
 
-            if (order.Status == OrderStatus.Delivered)
-            {
-                await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", "Замовлення вже доставлено!", "OK");
-                return;
-            }
+                if (order.Status == OrderStatus.Delivered)
+                {
+                    await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", "Замовлення вже доставлено!", "OK");
+                    return;
+                }
 
-            if (order.Status == OrderStatus.Created)
-            {
-                var isConfirmed = await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Підтвердження", "Ще не виконувалась операція зважування. Ви впевнені, що хочете позначити замовлення як доставлене?", "Так", "Ні");
-                if (isConfirmed)
+                if (order.Status == OrderStatus.Created)
+                {
+                    var isConfirmed = await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Підтвердження", "Ще не виконувалась операція зважування. Ви впевнені, що хочете позначити замовлення як доставлене?", "Так", "Ні");
+                    if (isConfirmed)
+                    {
+                        await _orderService.DeliverAsync(order);
+                    }
+                }
+                else
                 {
                     await _orderService.DeliverAsync(order);
                 }
-            }
-            else
-            {
-                await _orderService.DeliverAsync(order);
-            }
 
-            await LoadOrdersPage(CurrentOrderPage);
-            await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", "Замовлення доставлено!", "OK");
+                await LoadOrdersPage(CurrentOrderPage);
+                await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", "Замовлення доставлено!", "OK");
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to deliver order");
+                await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", $"Виникла критична поилка, звяжіться з розробником!!!\n Помилка: {ex.Message}", "OK");
+            }
         }
 
         public async Task PrintOrder(Order order)
         {
-            if (Customer.Id == default)
-            {
-                return;
-            }
-
             try
             {
+                if (Customer.Id == default)
+                {
+                    return;
+                }
+
                 var outputPath = await _invoiceService.GenerateInvoiceAsync(Customer, order, Debt);
 
                 await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", $"Накладна збережена в папці: {outputPath}", "OK");
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "Failed to print order");
                 await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", $"Помилка під час створення накладної: {ex.Message}", "OK");
             }
         }
 
         public async Task CalculateDebt()
         {
-            if (Customer.Id == default)
+            try
             {
-                return;
-            }
+                if (Customer.Id == default)
+                {
+                    return;
+                }
 
-            Debt = await _customerService.GetDebtAsync(Customer.Id);
+                Debt = await _customerService.GetDebtAsync(Customer.Id);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to calculate debt");
+                //await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", $"Виникла критична поилка, звяжіться з розробником!!!\n Помилка: {ex.Message}", "OK");
+            }
         }
 
         public async Task LoadOrdersPage(int page)
         {
-            if (Customer.Id == default)
+            try
             {
-                return;
-            }
 
-            var paginationResult = await _orderService.GetPaginatedAsync(Customer.Id, (page - 1) * PageSize, PageSize);
-
-            // Update existing collection instead of clearing it
-            for (int i = 0; i < paginationResult.Collection.Count; i++)
-            {
-                if (i < Orders.Count)
+                if (Customer.Id == default)
                 {
-                    Orders[i] = paginationResult.Collection[i]; // Update existing items
+                    return;
                 }
-                else
+
+                var paginationResult = await _orderService.GetPaginatedAsync(Customer.Id, (page - 1) * PageSize, PageSize);
+
+                // Update existing collection instead of clearing it
+                for (int i = 0; i < paginationResult.Collection.Count; i++)
                 {
-                    Orders.Add(paginationResult.Collection[i]); // Add new items
+                    if (i < Orders.Count)
+                    {
+                        Orders[i] = paginationResult.Collection[i]; // Update existing items
+                    }
+                    else
+                    {
+                        Orders.Add(paginationResult.Collection[i]); // Add new items
+                    }
                 }
-            }
 
-            // Remove extra items if necessary
-            while (Orders.Count > paginationResult.Collection.Count)
+                // Remove extra items if necessary
+                while (Orders.Count > paginationResult.Collection.Count)
+                {
+                    Orders.RemoveAt(Orders.Count - 1);
+                }
+
+                //in case previous solution doesn't work, you can clear the collection and add new items
+                //Orders.Clear();
+                //foreach (var order in paginationResult.Collection)
+                //{
+                //    Orders.Add(order);
+                //}
+
+                CurrentOrderPage = page;
+                NotLastOrderPage = paginationResult.TotalCount != 0 && (int)Math.Ceiling((double)paginationResult.TotalCount / PageSize) != page;
+            }
+            catch (Exception ex)
             {
-                Orders.RemoveAt(Orders.Count - 1);
+                Log.Error(ex, "Failed to load orders");
+                //await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", $"Виникла критична поилка, звяжіться з розробником!!!\n Помилка: {ex.Message}", "OK");
             }
-
-            //in case previous solution doesn't work, you can clear the collection and add new items
-            //Orders.Clear();
-            //foreach (var order in paginationResult.Collection)
-            //{
-            //    Orders.Add(order);
-            //}
-
-            CurrentOrderPage = page;
-            NotLastOrderPage = paginationResult.TotalCount != 0 && (int)Math.Ceiling((double)paginationResult.TotalCount / PageSize) != page;
         }
 
         public async Task LoadPaymentsPage(int page)
         {
-            if (Customer.Id == default)
+            try
             {
-                return;
+                if (Customer.Id == default)
+                {
+                    return;
+                }
+
+                var paginationResult = await _paymentService.GetPaginatedAsync(Customer.Id, (page - 1) * PageSize, PageSize);
+
+                Payments.Clear();
+                foreach (var payment in paginationResult.Collection)
+                {
+                    Payments.Add(payment);
+                }
+
+                CurrentPaymentPage = page;
+                NotLastPaymentPage = paginationResult.TotalCount != 0 && (int)Math.Ceiling((double)paginationResult.TotalCount / PageSize) != page;
             }
-
-            var paginationResult = await _paymentService.GetPaginatedAsync(Customer.Id, (page - 1) * PageSize, PageSize);
-
-            Payments.Clear();
-            foreach (var payment in paginationResult.Collection)
+            catch (Exception ex)
             {
-                Payments.Add(payment);
+                Log.Error(ex, "Failed to load payments");
+                //await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", $"Виникла критична поилка, звяжіться з розробником!!!\n Помилка: {ex.Message}", "OK");
             }
-
-            CurrentPaymentPage = page;
-            NotLastPaymentPage = paginationResult.TotalCount != 0 && (int)Math.Ceiling((double)paginationResult.TotalCount / PageSize) != page;
         }
 
         private void AddProduct()
@@ -312,34 +355,42 @@ namespace Colt.UI.Desktop.ViewModels.Customers
 
         private async Task SaveCustomer()
         {
-            if (string.IsNullOrWhiteSpace(Customer.Name) || string.IsNullOrWhiteSpace(Customer.PhoneNumber))
+            try
             {
-                await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", "Ім'я і телефон обов'язкові!", "OK");
-                return;
-            }
+                if (string.IsNullOrWhiteSpace(Customer.Name) || string.IsNullOrWhiteSpace(Customer.PhoneNumber))
+                {
+                    await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", "Ім'я і телефон обов'язкові!", "OK");
+                    return;
+                }
 
-            var invalidProducts = SelectedProducts.Where(x => x.Price <= 0).ToList();
-            if (invalidProducts.Any())
-            {
-                await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", $"Ціна продуктів: {string.Join(',', invalidProducts.Select(x => x.Product.Name))} не може бути менша або рівна 0. Клієнт не збережено!", "OK");
-                return;
-            }
+                var invalidProducts = SelectedProducts.Where(x => x.Price <= 0).ToList();
+                if (invalidProducts.Any())
+                {
+                    await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", $"Ціна продуктів: {string.Join(',', invalidProducts.Select(x => x.Product.Name))} не може бути менша або рівна 0. Клієнт не збережено!", "OK");
+                    return;
+                }
 
-            Customer.Products = SelectedProducts.ToList();
-            Customer.Orders = Orders.ToList();
-            Customer.Payments = Payments.ToList();
+                Customer.Products = SelectedProducts.ToList();
+                Customer.Orders = Orders.ToList();
+                Customer.Payments = Payments.ToList();
 
-            if (Customer.Id == 0)
-            {
-                await _customerService.InsertAsync(Customer);
-                await CalculateDebt();
-                await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", "Клієнт додано!", "OK");
+                if (Customer.Id == 0)
+                {
+                    await _customerService.InsertAsync(Customer);
+                    await CalculateDebt();
+                    await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", "Клієнт додано!", "OK");
+                }
+                else
+                {
+                    await _customerService.UpdateAsync(Customer);
+                    await CalculateDebt();
+                    await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", "Клієнт змінено!", "OK");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                await _customerService.UpdateAsync(Customer);
-                await CalculateDebt();
-                await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", "Клієнт змінено!", "OK");
+                Log.Error(ex, "Failed to save customer");
+                await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", $"Виникла критична поилка, звяжіться з розробником!!!\n Помилка: {ex.Message}", "OK");
             }
         }
 
@@ -363,18 +414,26 @@ namespace Colt.UI.Desktop.ViewModels.Customers
 
         private async Task RemoveOrderAsync(Order order)
         {
-            if(order.Status == OrderStatus.Delivered)
+            try
             {
-                await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", "Не можна видалити доствлене замовлення!", "OK");
-                return;
+                if (order.Status == OrderStatus.Delivered)
+                {
+                    await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", "Не можна видалити доствлене замовлення!", "OK");
+                    return;
+                }
+
+                bool isConfirmed = await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Підтвердження", "Ви впевнені, що хочете видалити цe замовлення?", "Так", "Ні");
+                if (isConfirmed)
+                {
+                    Orders.Remove(order);
+
+                    await _orderService.DeleteAsync(order.Id);
+                }
             }
-
-            bool isConfirmed = await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Підтвердження", "Ви впевнені, що хочете видалити цe замовлення?", "Так", "Ні");
-            if (isConfirmed)
+            catch (Exception ex)
             {
-                Orders.Remove(order);
-
-                await _orderService.DeleteAsync(order.Id);
+                Log.Error(ex, "Failed to remove order");
+                await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", $"Виникла критична поилка, звяжіться з розробником!!!\n Помилка: {ex.Message}", "OK");
             }
         }
 

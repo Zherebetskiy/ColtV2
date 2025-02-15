@@ -10,6 +10,8 @@ using Serilog.Events;
 using Serilog.Sinks.MSSqlServer;
 using Serilog;
 using System.Globalization;
+using System.Diagnostics;
+using Colt.UI.Desktop.ViewModels.Customers;
 
 namespace Colt.UI.Desktop
 {
@@ -41,19 +43,19 @@ namespace Colt.UI.Desktop
             builder.Services.AddTransient<AddProductViewModel>();
 
             // Configure Serilog
+            var q = config.GetConnectionString("DefaultConnection");
             Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Information()
+                .MinimumLevel.Error()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                 .Enrich.FromLogContext()
-                .WriteTo.File(Path.Combine(FileSystem.Current.AppDataDirectory, "logs.txt"))
+                .WriteTo.File(Path.Combine(FileSystem.Current.AppDataDirectory, "coltlogs.txt"))
                 .WriteTo.MSSqlServer(
                     connectionString: config.GetConnectionString("DefaultConnection"),
                     sinkOptions: new MSSqlServerSinkOptions { TableName = "LogEvents" },
-                    restrictedToMinimumLevel: LogEventLevel.Information)
+                    restrictedToMinimumLevel: LogEventLevel.Error)
                 .CreateLogger();
 
-            builder.Logging.ClearProviders();
-            builder.Logging.AddSerilog();
+            builder.Services.AddSerilog();
 
             #if DEBUG
             builder.Logging.AddDebug();

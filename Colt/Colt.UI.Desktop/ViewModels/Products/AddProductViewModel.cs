@@ -2,6 +2,7 @@
 using Colt.Domain.Entities;
 using Colt.Domain.Enums;
 using Colt.UI.Desktop.Helpers;
+using Serilog;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -40,25 +41,34 @@ namespace Colt.UI.Desktop.ViewModels.Products
 
         private async Task SaveProduct()
         {
-            if (string.IsNullOrWhiteSpace(Product.Name))
+            try
             {
-                await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", "Назва обов'язкова!", "OK");
-                return;
-            }
 
-            Product.MeasurementType = SelectedMeasurementType;
+                if (string.IsNullOrWhiteSpace(Product.Name))
+                {
+                    await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", "Назва обов'язкова!", "OK");
+                    return;
+                }
 
-            if (Product.Id == 0)
-            {
-                await _productService.InsertAsync(Product);
-                await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", "Продукт додано!", "OK");
+                Product.MeasurementType = SelectedMeasurementType;
+
+                if (Product.Id == 0)
+                {
+                    await _productService.InsertAsync(Product);
+                    await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", "Продукт додано!", "OK");
+                }
+                else
+                {
+                    await _productService.UpdateAsync(Product);
+                    await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", "Продукт змінено!", "OK");
+                }
+                await Shell.Current.GoToAsync("..");
             }
-            else
+            catch (Exception ex)
             {
-                await _productService.UpdateAsync(Product);
-                await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", "Продукт змінено!", "OK");
+                Log.Error(ex, "Failed to load products");
+                await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", $"Виникла критична поилка, звяжіться з розробником!!!\n Помилка: {ex.Message}", "OK");
             }
-            await Shell.Current.GoToAsync("..");
         }
     }
 }

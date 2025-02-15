@@ -2,6 +2,7 @@
 using Colt.Domain.Entities;
 using Colt.Domain.Enums;
 using Colt.UI.Desktop.Helpers;
+using Serilog;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -58,70 +59,78 @@ namespace Colt.UI.Desktop.ViewModels.Orders
 
         public async Task LoadOrder()
         {
-            var customerProducts = await _customerService.GetProductsAsync(Customer.Id);
-
-            if (OrderId == 0)
+            try
             {
-                Order = new Order
-                {
-                    CustomerId = Customer.Id,
-                    Date = DateTime.Now,
-                    Status = OrderStatus.Created,
-                    Delivery = DateTime.Now
-                };
+                var customerProducts = await _customerService.GetProductsAsync(Customer.Id);
 
-                foreach (var cp in customerProducts)
+                if (OrderId == 0)
                 {
-                    var productViewModel = new OrderProductViewModel
+                    Order = new Order
                     {
-                        ProductName = cp.Product.Name,
-                        ProductType = cp.Product.MeasurementType,
-                        ProductPrice = cp.Price
+                        CustomerId = Customer.Id,
+                        Date = DateTime.Now,
+                        Status = OrderStatus.Created,
+                        Delivery = DateTime.Now
                     };
-                    Products.Add(productViewModel);
-                    productViewModel.TotalPriceChanged += OnProductTotalPriceChanged;
+
+                    foreach (var cp in customerProducts)
+                    {
+                        var productViewModel = new OrderProductViewModel
+                        {
+                            ProductName = cp.Product.Name,
+                            ProductType = cp.Product.MeasurementType,
+                            ProductPrice = cp.Price
+                        };
+                        Products.Add(productViewModel);
+                        productViewModel.TotalPriceChanged += OnProductTotalPriceChanged;
+                    }
                 }
+                else
+                {
+                    Order = await _orderService.GetByIdAsync(OrderId);
+
+                    foreach (var op in Order.Products)
+                    {
+                        var productViewModel = new OrderProductViewModel
+                        {
+                            Id = op.Id,
+                            ProductName = op.ProductName,
+                            ProductPrice = op.ProductPrice,
+                            ProductType = op.ProductType,
+                            ActualWeight = op.ActualWeight,
+                            OrderedWeight = op.OrderedWeight,
+                            OrderId = op.OrderId
+                        };
+
+                        Products.Add(productViewModel);
+                        productViewModel.TotalPriceChanged += OnProductTotalPriceChanged;
+                    }
+
+                    var missedProducts = customerProducts
+                        .Where(x => !Products.Any(y => y.ProductName == x.Product.Name))
+                        .ToList();
+
+                    foreach (var mp in missedProducts)
+                    {
+                        var productViewModel = new OrderProductViewModel
+                        {
+                            ProductName = mp.Product.Name,
+                            ProductType = mp.Product.MeasurementType,
+                            ProductPrice = mp.Price
+                        };
+
+                        Products.Add(productViewModel);
+                        productViewModel.TotalPriceChanged += OnProductTotalPriceChanged;
+                    }
+                }
+
+                CalculateTotalOrderPrice();
             }
-            else
+            catch (Exception ex)
             {
-                Order = await _orderService.GetByIdAsync(OrderId);
-
-                foreach (var op in Order.Products)
-                {
-                    var productViewModel = new OrderProductViewModel
-                    {
-                        Id = op.Id,
-                        ProductName = op.ProductName,
-                        ProductPrice = op.ProductPrice,
-                        ProductType = op.ProductType,
-                        ActualWeight = op.ActualWeight,
-                        OrderedWeight = op.OrderedWeight,
-                        OrderId = op.OrderId
-                    };
-
-                    Products.Add(productViewModel);
-                    productViewModel.TotalPriceChanged += OnProductTotalPriceChanged;
-                }
-
-                var missedProducts = customerProducts
-                    .Where(x => !Products.Any(y => y.ProductName == x.Product.Name))
-                    .ToList();
-
-                foreach (var mp in missedProducts)
-                {
-                    var productViewModel = new OrderProductViewModel
-                    {
-                        ProductName = mp.Product.Name,
-                        ProductType = mp.Product.MeasurementType,
-                        ProductPrice = mp.Price
-                    };
-
-                    Products.Add(productViewModel);
-                    productViewModel.TotalPriceChanged += OnProductTotalPriceChanged;
-                }
+                Log.Error(ex, "Failed to load order");
+                //await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", $"Виникла критична поилка, звяжіться з розробником!!!\n Помилка: {ex.Message}", "OK");
             }
-
-            CalculateTotalOrderPrice();
         }
 
         private void OnProductTotalPriceChanged(object sender, EventArgs e)
@@ -136,48 +145,56 @@ namespace Colt.UI.Desktop.ViewModels.Orders
 
         private async Task SaveOrder()
         {
-            bool isConfirmed = true;
-            if (Order.Status == OrderStatus.Delivered)
+            try
             {
-                isConfirmed = await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Підтвердження", "Замовлення вже доставлено, ви впевнені що бажаєте змінити його?", "Так", "Ні");
+                bool isConfirmed = true;
+                if (Order.Status == OrderStatus.Delivered)
+                {
+                    isConfirmed = await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Підтвердження", "Замовлення вже доставлено, ви впевнені що бажаєте змінити його?", "Так", "Ні");
+                }
+
+                if (!isConfirmed)
+                {
+                    return;
+                }
+
+                Order.TotalPrice = TotalOrderPrice;
+                Order.TotalWeight = Products.Sum(x => x.ActualWeight);
+                Order.Products = Products.Select(p => new OrderProduct
+                {
+                    Id = p.Id,
+                    ProductName = p.ProductName,
+                    ProductPrice = p.ProductPrice,
+                    ProductType = p.ProductType,
+                    OrderedWeight = p.OrderedWeight,
+                    ActualWeight = p.ActualWeight,
+                    TotalPrice = p.TotalPrice
+                }).ToList();
+
+                Order.Status = Products.Any(x => x.ActualWeight.HasValue && x.ActualWeight != 0)
+                    ? OrderStatus.Calculated
+                    : OrderStatus.Created;
+
+                if (OrderId == default)
+                {
+                    await _orderService.InsertAsync(Order);
+
+                    await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", "Замовлення створено!", "OK");
+                }
+                else
+                {
+                    await _orderService.UpdateAsync(Order);
+
+                    await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", "Замовлення змінено!", "OK");
+                }
+
+                await Shell.Current.GoToAsync("..");
             }
-
-            if (!isConfirmed)
+            catch (Exception ex)
             {
-                return;
+                Log.Error(ex, "Failed to save order");
+                await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", $"Виникла критична поилка, звяжіться з розробником!!!\n Помилка: {ex.Message}", "OK");
             }
-
-            Order.TotalPrice = TotalOrderPrice;
-            Order.TotalWeight = Products.Sum(x => x.ActualWeight);
-            Order.Products = Products.Select(p => new OrderProduct
-            {
-                Id = p.Id,
-                ProductName = p.ProductName,
-                ProductPrice = p.ProductPrice,
-                ProductType = p.ProductType,
-                OrderedWeight = p.OrderedWeight,
-                ActualWeight = p.ActualWeight,
-                TotalPrice = p.TotalPrice
-            }).ToList();
-
-            Order.Status = Products.Any(x => x.ActualWeight.HasValue && x.ActualWeight != 0)
-                ? OrderStatus.Calculated
-                : OrderStatus.Created;
-
-            if (OrderId == default)
-            {
-                await _orderService.InsertAsync(Order);
-
-                await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", "Замовлення створено!", "OK");
-            }
-            else
-            {
-                await _orderService.UpdateAsync(Order);
-
-                await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", "Замовлення змінено!", "OK");
-            }
-
-            await Shell.Current.GoToAsync("..");
         }
     }
 }

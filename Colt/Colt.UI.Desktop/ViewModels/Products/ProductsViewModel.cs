@@ -2,6 +2,7 @@
 using Colt.Domain.Entities;
 using Colt.UI.Desktop.Helpers;
 using Colt.UI.Desktop.Views;
+using Serilog;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -33,13 +34,22 @@ namespace Colt.UI.Desktop.ViewModels.Products
 
         private async Task LoadProducts()
         {
-            var products = (await _productService.GetAllAsync())
-                .OrderByDescending(x => x.Id)
-                .ToList();
-            Products.Clear();
-            foreach (var product in products)
+            try
             {
-                Products.Add(product);
+
+                var products = (await _productService.GetAllAsync())
+                    .OrderByDescending(x => x.Id)
+                    .ToList();
+                Products.Clear();
+                foreach (var product in products)
+                {
+                    Products.Add(product);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to load products");
+                //await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", $"Виникла критична поилка, звяжіться з розробником!!!\n Помилка: {ex.Message}", "OK");
             }
         }
 
@@ -54,12 +64,20 @@ namespace Colt.UI.Desktop.ViewModels.Products
 
         private async Task DeleteProduct(Product product)
         {
-            bool isConfirmed = await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Підтвердження", "Ви впевнені, що хочете видалити цей продукт?", "Так", "Ні");
-            if (isConfirmed)
+            try
             {
-                await _productService.DeleteAsync(product.Id);
-                Products.Remove(product);
-                await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", "Продукт видалено!", "OK");
+                bool isConfirmed = await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Підтвердження", "Ви впевнені, що хочете видалити цей продукт?", "Так", "Ні");
+                if (isConfirmed)
+                {
+                    await _productService.DeleteAsync(product.Id);
+                    Products.Remove(product);
+                    await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", "Продукт видалено!", "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to delete product");
+                await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", $"Виникла критична поилка, звяжіться з розробником!!!\n Помилка: {ex.Message}", "OK");
             }
         }
     }

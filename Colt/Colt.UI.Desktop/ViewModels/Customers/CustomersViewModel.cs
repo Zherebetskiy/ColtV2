@@ -1,5 +1,4 @@
 ﻿using Colt.Application.Interfaces;
-using Colt.Application.Services;
 using Colt.Domain.Entities;
 using Colt.UI.Desktop.Helpers;
 using Colt.UI.Desktop.Views;
@@ -46,7 +45,7 @@ namespace Colt.UI.Desktop.ViewModels.Customers
             catch (Exception ex)
             {
                 Log.Error(ex, "Failed to load customers");
-                await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", $"Виникла критична поилка, звяжіться з розробником!!!\n Помилка: {ex.Message}", "OK");
+                //await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", $"Виникла критична поилка, звяжіться з розробником!!!\n Помилка: {ex.Message}", "OK");
             }
         }
 
@@ -64,7 +63,6 @@ namespace Colt.UI.Desktop.ViewModels.Customers
         {
             try
             {
-
                 bool isConfirmed = await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Підтвердження", "Ви впевнені, що хочете видалити цього оптовика?", "Так", "Ні");
                 if (isConfirmed)
                 {
@@ -75,8 +73,8 @@ namespace Colt.UI.Desktop.ViewModels.Customers
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "Failed to delete customer");
                 await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", $"Виникла критична поилка, звяжіться з розробником!!!\n Помилка: {ex.Message}", "OK");
-                Log.Error(ex, "Failed to delete customer"); 
             }
         }
     }
