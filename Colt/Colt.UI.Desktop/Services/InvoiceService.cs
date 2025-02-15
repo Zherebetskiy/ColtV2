@@ -27,7 +27,8 @@ namespace Colt.UI.Desktop
 
             using var templateStream = await FileSystem.OpenAppPackageFileAsync("CustomerInvoiceTemplate.docx");
 
-            var docName = $"{order.Date:dd.MMM yyyy} - {customer.Name} - {order.Id}.docx";
+            var docName = $"{DateTime.Now:dd.MMM yyyy} - {customer.Name} - {order.Id}.docx";
+
             var outputPath = Path.Combine(FileSystem.CacheDirectory, docName);
 
             _documentService.ProcessFile(model, templateStream, outputPath);
