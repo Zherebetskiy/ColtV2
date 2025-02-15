@@ -3,7 +3,6 @@ using Colt.Domain.Entities;
 using Colt.UI.Desktop.Helpers;
 using Serilog;
 using System.Collections.ObjectModel;
-using System.Windows.Input;
 
 namespace Colt.UI.Desktop.ViewModels.Statistics
 {

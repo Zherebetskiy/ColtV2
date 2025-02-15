@@ -48,7 +48,9 @@ namespace Colt.UI.Desktop
                 .MinimumLevel.Error()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                 .Enrich.FromLogContext()
-                .WriteTo.File(Path.Combine(FileSystem.Current.AppDataDirectory, "coltlogs.txt"))
+                .WriteTo.File(
+                    path: Path.Combine(FileSystem.Current.AppDataDirectory, "coltlogs.txt"),
+                    restrictedToMinimumLevel: LogEventLevel.Error)
                 .WriteTo.MSSqlServer(
                     connectionString: config.GetConnectionString("DefaultConnection"),
                     sinkOptions: new MSSqlServerSinkOptions { TableName = "LogEvents" },
