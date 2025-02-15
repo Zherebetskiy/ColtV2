@@ -3,6 +3,7 @@ using Colt.Application.Services;
 using Colt.Domain.Entities;
 using Colt.UI.Desktop.Helpers;
 using Colt.UI.Desktop.Views;
+using Serilog;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -33,11 +34,19 @@ namespace Colt.UI.Desktop.ViewModels.Customers
 
         private async Task LoadCustomers()
         {
-            var customers = await _customerService.GetAllAsync();
-            Customers.Clear();
-            foreach (var customer in customers)
+            try
             {
-                Customers.Add(customer);
+                var customers = await _customerService.GetAllAsync();
+                Customers.Clear();
+                foreach (var customer in customers)
+                {
+                    Customers.Add(customer);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to load customers");
+                await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", $"Виникла критична поилка, звяжіться з розробником!!!\n Помилка: {ex.Message}", "OK");
             }
         }
 
@@ -53,12 +62,21 @@ namespace Colt.UI.Desktop.ViewModels.Customers
 
         private async Task DeleteCustomer(Customer customer)
         {
-            bool isConfirmed = await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Підтвердження", "Ви впевнені, що хочете видалити цього оптовика?", "Так", "Ні");
-            if (isConfirmed)
+            try
             {
-                await _customerService.DeleteAsync(customer.Id);
-                Customers.Remove(customer);
-                await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", "Оптовика видалено!", "OK");
+
+                bool isConfirmed = await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Підтвердження", "Ви впевнені, що хочете видалити цього оптовика?", "Так", "Ні");
+                if (isConfirmed)
+                {
+                    await _customerService.DeleteAsync(customer.Id);
+                    Customers.Remove(customer);
+                    await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Успішно", "Оптовика видалено!", "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Помилка", $"Виникла критична поилка, звяжіться з розробником!!!\n Помилка: {ex.Message}", "OK");
+                Log.Error(ex, "Failed to delete customer"); 
             }
         }
     }

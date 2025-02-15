@@ -6,6 +6,9 @@ using CommunityToolkit.Maui;
 using Microcharts.Maui;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Serilog.Events;
+using Serilog.Sinks.MSSqlServer;
+using Serilog;
 using System.Globalization;
 
 namespace Colt.UI.Desktop
@@ -36,6 +39,21 @@ namespace Colt.UI.Desktop
             builder.Services.AddInfrastructureServices(config);
             builder.Services.AddScoped<IInvoiceService, InvoiceService>();
             builder.Services.AddTransient<AddProductViewModel>();
+
+            // Configure Serilog
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Information()
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                .Enrich.FromLogContext()
+                .WriteTo.File(Path.Combine(FileSystem.Current.AppDataDirectory, "logs.txt"))
+                .WriteTo.MSSqlServer(
+                    connectionString: config.GetConnectionString("DefaultConnection"),
+                    sinkOptions: new MSSqlServerSinkOptions { TableName = "LogEvents" },
+                    restrictedToMinimumLevel: LogEventLevel.Information)
+                .CreateLogger();
+
+            builder.Logging.ClearProviders();
+            builder.Logging.AddSerilog();
 
             #if DEBUG
             builder.Logging.AddDebug();
